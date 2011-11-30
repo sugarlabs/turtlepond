@@ -46,8 +46,7 @@ STRATEGY = 'def _turtle_strategy(self, turtle):\n\
         row = turtle[1] + CIRCLE[c][(i + n) % 6][1]\n\
         if not self._dots[self._grid_to_dot((col, row))].type:\n\
             return [col, row]\n\
-    return turtle\n\
-'
+    return turtle\n'
 
 
 class Game():
@@ -70,6 +69,7 @@ class Game():
         self._height = gtk.gdk.screen_height() - (GRID_CELL_SIZE * 1.5)
         self._scale = self._height / (14.0 * DOT_SIZE * 1.5)
         self._dot_size = int(DOT_SIZE * self._scale)
+        self._half_dot_size = int(DOT_SIZE * self._scale / 2.)
         self._space = int(self._dot_size / 2.)
         self.strategy = STRATEGY
 
@@ -87,7 +87,7 @@ class Game():
                         Sprite(self._sprites,
                                xoffset + x * (self._dot_size + self._space),
                                y * (self._dot_size + self._space),
-                               self._new_dot('#C0C0C0')))
+                               self._new_dot('#B0B0B0')))
                 else:
                     self._dots.append(
                         Sprite(self._sprites,
@@ -99,6 +99,7 @@ class Game():
         # Put a turtle at the center of the screen
         pos = self._dots[int(THIRTEEN * THIRTEEN / 2)].get_xy()
         self._turtle = Sprite(self._sprites, pos[0], pos[1], self._new_turtle())
+        self._turtle.move_relative((-self._half_dot_size, -self._half_dot_size))
 
         # and initialize a few variables we'll need.
         self._all_clear()
@@ -121,6 +122,7 @@ class Game():
         # Recenter the turtle
         pos = self._dots[int(THIRTEEN * THIRTEEN / 2)].get_xy()
         self._turtle.move(pos)
+        self._turtle.move_relative((-self._half_dot_size, -self._half_dot_size))
 
     def _initiating(self):
         return self._activity.initiating
@@ -168,12 +170,14 @@ class Game():
         self._turtle_dot = None
         for dot in self._dots:
             pos = dot.get_xy()
-            if pos[0] == turtle_pos[0] and pos[1] == turtle_pos[1]:
+            # Turtle is offset
+            if pos[0] == turtle_pos[0] + self._half_dot_size and \
+               pos[1] == turtle_pos[1] + self._half_dot_size:
                 self._turtle_dot = self._dots.index(dot)
                 break
         if self._turtle_dot is None:
             _logger.debug('Cannot find the turtle...')
-            return
+            return None
 
         # Given the col and row of the turtle and the clicked dot, do something
         new_dot = self._grid_to_dot(
@@ -181,10 +185,14 @@ class Game():
                                      self._dot_to_grid(self._turtle_dot)))
         pos = self._dots[new_dot].get_xy()
         self._turtle.move(pos)
+        # Turtle is offset
+        self._turtle.move_relative((-self._half_dot_size, -self._half_dot_size))
         return new_dot
 
     def _test_game_over(self, new_dot):
         ''' Check to see if game is over '''
+        if new_dot is None:
+            return
         if self._dots[new_dot].type is None:
             self._set_label(_('turtle wins'))
             return True
@@ -231,6 +239,16 @@ class Game():
         self._set_label(msg)
         self.saw_game_over = True
 
+    def _my_strategy_import(self, f, arg):
+        ''' Run Python code passed as argument '''
+        userdefined = {}
+        try:
+            exec f in globals(), userdefined
+            return userdefined['_turtle_strategy'](self, arg)
+        except:
+            traceback.print_exc()
+            return None
+
     def _expose_cb(self, win, event):
         ''' Callback to handle window expose events '''
         self.do_expose_event(event)
@@ -263,12 +281,13 @@ class Game():
 
     def _new_turtle(self):
         ''' generate a turtle '''
-        self._svg_width = self._dot_size
-        self._svg_height = self._dot_size
+        self._svg_width = self._dot_size * 2
+        self._svg_height = self._dot_size * 2
+        self._stroke = '#000000'
+        self._fill = '#282828'
         return svg_str_to_pixbuf(
             self._header() + \
-            self._turtle(self._dot_size / 2., self._dot_size / 2.,
-                         self._dot_size / 2.) + \
+            self._turtle() + \
             self._footer())
 
     def _header(self):
@@ -283,23 +302,87 @@ class Game():
             str(self._stroke) +  ';" r="' + str(r - 0.5) +  '" cx="' + \
             str(cx) + '" cy="' + str(cy) + '" />\n'
 
-    def _turtle(self, r, cx, cy):
-        return '<circle style="fill:#000000;stroke:#999999;" r="' + \
-            str(r - 0.5) +  '" cx="' + \
-            str(cx) + '" cy="' + str(cy) + '" />\n'
-
     def _footer(self):
         return '</svg>\n'
 
-    def _my_strategy_import(self, f, arg):
-        ''' Run Python code passed as argument '''
-        userdefined = {}
-        try:
-            exec f in globals(), userdefined
-            return userdefined['_turtle_strategy'](self, arg)
-        except:
-            traceback.print_exc()
-            return None
+    def _turtle(self):
+        svg = '<g\ntransform="scale(%.1f, %.1f)">\n' % (
+            self._svg_width / 55., self._svg_height / 55.)
+        svg += '%s%s%s%s%s%s%s%s' % ('  <path d="M 27.5 48.3 ',
+              'C 26.9 48.3 26.4 48.2 25.9 48.2 L 27.2 50.5 L 28.6 48.2 ',
+              'C 28.2 48.2 27.9 48.3 27.5 48.3 Z" stroke_width="3.5" ',
+              'fill="', self._fill, ';" stroke="', self._stroke,
+              '" />\n')
+        svg += '%s%s%s%s%s%s%s%s%s%s' % ('   <path d="M 40.2 11.7 ',
+              'C 38.0 11.7 36.2 13.3 35.8 15.3 ',
+              'C 37.7 16.7 39.3 18.4 40.5 20.5 ',
+              'C 42.8 20.4 44.6 18.5 44.6 16.2 ',
+              'C 44.6 13.7 42.6 11.7 40.2 11.7 Z" stroke_width="3.5" ',
+              'fill="', self._fill, ';" stroke="', self._stroke, '" />\n')
+        svg += '%s%s%s%s%s%s%s%s%s%s' % ('   <path d="M 40.7 39.9 ',
+              'C 39.5 42.1 37.9 44.0 35.9 45.4 ',
+              'C 36.4 47.3 38.1 48.7 40.2 48.7 ',
+              'C 42.6 48.7 44.6 46.7 44.6 44.3 ',
+              'C 44.6 42.0 42.9 40.2 40.7 39.9 Z" stroke_width="3.5" ',
+              'fill="', self._fill, ';" stroke="', self._stroke, '" />\n')
+        svg += '%s%s%s%s%s%s%s%s%s%s' % ('   <path d="M 14.3 39.9 ',
+              'C 12.0 40.1 10.2 42.0 10.2 44.3 ',
+              'C 10.2 46.7 12.2 48.7 14.7 48.7 ',
+              'C 16.7 48.7 18.5 47.3 18.9 45.4 ',
+              'C 17.1 43.9 15.5 42.1 14.3 39.9 Z" stroke_width="3.5" ',
+              'fill="', self._fill, ';" stroke="', self._stroke, '" />\n')
+        svg += '%s%s%s%s%s%s%s%s%s%s' % ('   <path d="M 19.0 15.4 ',
+              'C 18.7 13.3 16.9 11.7 14.7 11.7 ',
+              'C 12.2 11.7 10.2 13.7 10.2 16.2 ',
+              'C 10.2 18.5 12.1 20.5 14.5 20.6 ',
+              'C 15.7 18.5 17.2 16.8 19.0 15.4 Z" stroke_width="3.5" ',
+              'fill="', self._fill, ';" stroke="', self._stroke, '" />\n')
+        svg += '%s%s%s%s%s%s%s%s%s%s%s%s' % ('   <path d="M 27.5 12.6 ',
+              'C 29.4 12.6 31.2 13.0 32.9 13.7 ',
+              'C 33.7 12.6 34.1 11.3 34.1 9.9 ',
+              'C 34.1 6.2 31.1 3.2 27.4 3.2 ',
+              'C 23.7 3.2 20.7 6.2 20.7 9.9 ',
+              'C 20.7 11.3 21.2 12.7 22.0 13.7 ',
+              'C 23.7 13.0 25.5 12.6 27.5 12.6 Z" stroke_width="3.5" ',
+              'fill="', self._fill, ';" stroke="', self._stroke, '" />\n')
+        svg += '%s%s%s%s%s%s%s%s%s%s%s%s' % ('   <path d="M 43.1 30.4 ',
+              'C 43.1 35.2 41.5 39.7 38.5 43.0 ',
+              'C 35.6 46.4 31.6 48.3 27.5 48.3 ',
+              'C 23.4 48.3 19.4 46.4 16.5 43.0 ',
+              'C 13.5 39.7 11.9 35.2 11.9 30.4 ',
+              'C 11.9 20.6 18.9 12.6 27.5 12.6 ',
+              'C 36.1 12.6 43.1 20.6 43.1 30.4 Z" stroke_width="3.5" ',
+              'fill="', self._fill, ';" stroke="', self._stroke, '" />\n')
+        svg += '%s%s%s%s%s' % ('   <path d="M 25.9 33.8 L 24.3 29.1 ',
+              'L 27.5 26.5 L 31.1 29.2 L 29.6 33.8 Z" stroke_width="3.5" ',
+              'fill="', self._stroke, ';" stroke="none" />\n')
+        svg += '%s%s%s%s%s%s' % ('   <path d="M 27.5 41.6 ',
+              'C 23.5 41.4 22.0 39.5 22.0 39.5 L 25.5 35.4 L 30.0 35.5 ',
+              'L 33.1 39.7 C 33.1 39.7 30.2 41.7 27.5 41.6 Z" ',
+              'stroke_width="3.5" fill="', self._stroke,
+              ';" stroke="none" />\n')
+        svg += '%s%s%s%s%s%s' % ('   <path d="M 18.5 33.8 ',
+              'C 17.6 30.9 18.6 27.0 18.6 27.0 L 22.6 29.1 L 24.1 33.8 ',
+              'L 20.5 38.0 C 20.5 38.0 19.1 36.0 18.4 33.8 Z" ',
+              'stroke_width="3.5" fill="', self._stroke,
+              ';" stroke="none" />\n')
+        svg += '%s%s%s%s%s%s' % ('   <path d="M 19.5 25.1 ',
+              'C 19.5 25.1 20.0 23.2 22.5 21.3 ',
+              'C 24.7 19.7 27.0 19.6 27.0 19.6 L 26.9 24.6 L 23.4 27.3 ',
+              'L 19.5 25.1 Z" stroke_width="3.5" fill="', self._stroke,
+              ';" stroke="none" />\n')
+        svg += '%s%s%s%s%s%s' % ('   <path d="M 32.1 27.8 L 28.6 25.0 ',
+              'L 29 19.8 C 29 19.8 30.8 19.7 33.0 21.4 ',
+              'C 35.2 23.2 36.3 26.4 36.3 26.4 L 32.1 27.8 Z" ',
+              'stroke_width="3.5" fill="', self._stroke,
+              ';" stroke="none" />\n')
+        svg += '%s%s%s%s%s%s' % ('   <path d="M 31.3 34.0 L 32.6 29.6 ',
+              'L 36.8 28.0 C 36.8 28.0 37.5 30.7 36.8 33.7 ',
+              'C 36.2 36.0 34.7 38.1 34.7 38.1 L 31.3 34.0 Z" ',
+              'stroke_width="3.5" fill="', self._stroke,
+              ';" stroke="none" />\n')
+        svg += '</g>\n'
+        return svg
 
 
 def svg_str_to_pixbuf(svg_string):
