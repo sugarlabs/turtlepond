@@ -43,26 +43,20 @@ CIRCLE = [[(0, -1), (1, 0), (0, 1), (-1, 1), (-1, 0), (-1, -1)],
 STRATEGY_MSG = _('turtle is looking for any open dot')
 STRATEGY = 'def _turtle_strategy(self, turtle):\n\
     self._set_label(self.strategy_msg)\n\
-    c = turtle[1] % 2\n\
+    dots = self._surrounding_dots(turtle)\n\
     for i in range(6):\n\
-        col = turtle[0] + CIRCLE[c][i][0]\n\
-        row = turtle[1] + CIRCLE[c][i][1]\n\
-        if self._dots[self._grid_to_dot((col, row))].type is None:\n\
+        if self._dots[dots[i]].type is None:\n\
             self._orientation = i\n\
-            return [col, row]\n\
-    n = int(uniform(0, 3))\n\
+            return self._dot_to_grid(dots[i])\n\
+    n = int(uniform(0, 4))\n\
     if n > 0:\n\
-        col = turtle[0] + CIRCLE[c][self._orientation][0]\n\
-        row = turtle[1] + CIRCLE[c][self._orientation][1]\n\
-        if not self._dots[self._grid_to_dot((col, row))].type:\n\
-            return [col, row]\n\
+        if not self._dots[dots[self._orientation]].type:\n\
+            return self._dot_to_grid(dots[self._orientation])\n\
     n = int(uniform(0, 6))\n\
     for i in range(6):\n\
-        col = turtle[0] + CIRCLE[c][(i + n) % 6][0]\n\
-        row = turtle[1] + CIRCLE[c][(i + n) % 6][1]\n\
-        if not self._dots[self._grid_to_dot((col, row))].type:\n\
+        if not self._dots[dots[(i + n) % 6]].type:\n\
             self._orientation = (i + n) % 6\n\
-            return [col, row]\n\
+            return self._dot_to_grid(dots[(i + n) % 6])\n\
     self._orientation = (i + n) % 6\n\
     return turtle\n'
 
@@ -250,6 +244,16 @@ class Game():
         ''' Nothing left to do except show the results. '''
         self._set_label(msg)
         self.saw_game_over = True
+
+    def _surrounding_dots(self, pos):
+        ''' Returns dots surrounding a position in the grid '''
+        dots = []
+        evenodd = pos[1] % 2
+        for i in range(6):
+            col = pos[0] + CIRCLE[evenodd][i][0]
+            row = pos[1] + CIRCLE[evenodd][i][1]
+            dots.append(self._grid_to_dot((col, row)))
+        return dots
 
     def _my_strategy_import(self, f, arg):
         ''' Run Python code passed as argument '''
