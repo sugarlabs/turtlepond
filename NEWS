@@ -1,7 +1,17 @@
 NEWS
 
+3
+
+ENHANCEMENTS:
+* Improved graphics (turtle is now a turtle)
+* Error messages from custom strategy appears on toolbar
+* Reloading strategy starts new game
+* Improved documentation; please see
+  http://wiki.sugarlabs.org/go/Activities/Turtle_in_a_Pond
+
 2
 
+BUG FIX:
 * Fixed problem launching with old-style toolbars
 
 1
