@@ -45,6 +45,9 @@ from game import Game
 from genxo import generate_xo
 from utils import svg_str_to_pixbuf
 
+import logging
+_logger = logging.getLogger('turtle-in-a-pond-activity')
+
 
 SERVICE = 'org.sugarlabs.TurtlePondActivity'
 IFACE = SERVICE
