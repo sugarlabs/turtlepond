@@ -18,7 +18,7 @@ from sugar.activity import activity
 from sugar import profile
 try:
     from sugar.graphics.toolbarbox import ToolbarBox
-    _have_toolbox = False
+    _have_toolbox = True
 except ImportError:
     _have_toolbox = False
 
