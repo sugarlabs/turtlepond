@@ -44,10 +44,18 @@ STRATEGY_MSG = _('turtle is looking for any open dot')
 STRATEGY = 'def _turtle_strategy(self, turtle):\n\
     self._set_label(self.strategy_msg)\n\
     c = turtle[1] % 2\n\
-    col = turtle[0] + CIRCLE[c][self._orientation][0]\n\
-    row = turtle[1] + CIRCLE[c][self._orientation][1]\n\
-    if not self._dots[self._grid_to_dot((col, row))].type:\n\
-        return [col, row]\n\
+    for i in range(6):\n\
+        col = turtle[0] + CIRCLE[c][i][0]\n\
+        row = turtle[1] + CIRCLE[c][i][1]\n\
+        if self._dots[self._grid_to_dot((col, row))].type is None:\n\
+            self._orientation = i\n\
+            return [col, row]\n\
+    n = int(uniform(0, 3))\n\
+    if n > 0:\n\
+        col = turtle[0] + CIRCLE[c][self._orientation][0]\n\
+        row = turtle[1] + CIRCLE[c][self._orientation][1]\n\
+        if not self._dots[self._grid_to_dot((col, row))].type:\n\
+            return [col, row]\n\
     n = int(uniform(0, 6))\n\
     for i in range(6):\n\
         col = turtle[0] + CIRCLE[c][(i + n) % 6][0]\n\
@@ -70,10 +78,8 @@ class Game():
 
         self._canvas.set_flags(gtk.CAN_FOCUS)
         self._canvas.add_events(gtk.gdk.BUTTON_PRESS_MASK)
-        self._canvas.add_events(gtk.gdk.BUTTON_RELEASE_MASK)
         self._canvas.connect("expose-event", self._expose_cb)
         self._canvas.connect("button-press-event", self._button_press_cb)
-        self._canvas.connect("button-release-event", self._button_release_cb)
 
         self._width = gtk.gdk.screen_width()
         self._height = gtk.gdk.screen_height() - (GRID_CELL_SIZE * 1.5)
@@ -122,7 +128,6 @@ class Game():
     def _all_clear(self):
         ''' Things to reinitialize when starting up a new game. '''
         self._press = None
-        self._release = None
         self.last_spr_moved = None
         self.whos_turn = 0
         self._waiting_for_my_turn = False
@@ -169,7 +174,7 @@ class Game():
         win.grab_focus()
         x, y = map(int, event.get_coords())
 
-        spr = self._sprites.find_sprite((x, y))
+        spr = self._sprites.find_sprite((x, y), inverse=True)
         if spr == None:
             return
 
@@ -178,8 +183,6 @@ class Game():
             spr.type = True
             spr.set_shape(self._new_dot(self._colors[STROKE]))
             self._test_game_over(self._move_the_turtle())
-
-        self._release = None
         return True
 
     def _move_the_turtle(self):
@@ -243,19 +246,6 @@ class Game():
         ''' calculate the grid column and row for a dot '''
         return [dot % THIRTEEN, int(dot / THIRTEEN)]
 
-    def _button_release_cb(self, win, event):
-        win.grab_focus()
-
-        if self._press is None:
-            return
-
-        x, y = map(int, event.get_coords())
-        spr = self._sprites.find_sprite((x, y))
-        self._release = spr
-        self._press = None
-        self._release = None
-        return True
-
     def game_over(self, msg=_('Game over')):
         ''' Nothing left to do except show the results. '''
         self._set_label(msg)
@@ -318,8 +308,8 @@ class Game():
         ''' generate a turtle '''
         self._svg_width = self._dot_size * 2
         self._svg_height = self._dot_size * 2
-        self._stroke = '#000000'
-        self._fill = '#282828'
+        self._stroke = '#101010'
+        self._fill = '#404040'
         return svg_str_to_pixbuf(
             self._header() + \
             self._turtle() + \

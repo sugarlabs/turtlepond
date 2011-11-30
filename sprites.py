@@ -125,10 +125,11 @@ class Sprites:
         if spr in self.list:
             self.list.remove(spr)
 
-    def find_sprite(self, pos):
+    def find_sprite(self, pos, inverse=False):
         ''' Search based on (x, y) position. Return the 'top/first' one. '''
         list = self.list[:]
-        list.reverse()
+        if not inverse:
+            list.reverse()
         for spr in list:
             if spr.hit(pos):
                 return spr
