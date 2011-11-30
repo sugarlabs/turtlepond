@@ -44,6 +44,10 @@ STRATEGY_MSG = _('turtle is looking for any open dot')
 STRATEGY = 'def _turtle_strategy(self, turtle):\n\
     self._set_label(self.strategy_msg)\n\
     c = turtle[1] % 2\n\
+    col = turtle[0] + CIRCLE[c][self._orientation][0]\n\
+    row = turtle[1] + CIRCLE[c][self._orientation][1]\n\
+    if not self._dots[self._grid_to_dot((col, row))].type:\n\
+        return [col, row]\n\
     n = int(uniform(0, 6))\n\
     for i in range(6):\n\
         col = turtle[0] + CIRCLE[c][(i + n) % 6][0]\n\
