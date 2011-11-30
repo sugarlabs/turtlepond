@@ -149,11 +149,13 @@ class TurtlePondActivity(activity.Activity):
     def _do_reset_strategy_cb(self, button):
         ''' Reset the strategy to default '''
         self._game.reset_strategy()
+        self._game.new_game()
 
     def _do_load_python_cb(self, button):
         ''' Load Python code from the Journal. '''
         self._chooser('org.laptop.Pippy',
                 self._load_python_code_from_journal)
+        self._game.new_game()
 
     def _load_python_code_from_journal(self, dsobject):
         """ Read the Python code from the Journal object """
