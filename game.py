@@ -13,10 +13,12 @@
 
 import gtk
 import gobject
+import cairo
+
+from math import sqrt, pi
+from random import uniform
 
 from gettext import gettext as _
-
-from random import uniform
 
 import traceback
 import logging
@@ -45,7 +47,9 @@ STRATEGY = 'def _turtle_strategy(self, turtle):\n\
         col = turtle[0] + CIRCLE[c][(i + n) % 6][0]\n\
         row = turtle[1] + CIRCLE[c][(i + n) % 6][1]\n\
         if not self._dots[self._grid_to_dot((col, row))].type:\n\
+            self._orientation = (i + n) % 6\n\
             return [col, row]\n\
+    self._orientation = (i + n) % 6\n\
     return turtle\n'
 
 
@@ -69,8 +73,9 @@ class Game():
         self._height = gtk.gdk.screen_height() - (GRID_CELL_SIZE * 1.5)
         self._scale = self._height / (14.0 * DOT_SIZE * 1.5)
         self._dot_size = int(DOT_SIZE * self._scale)
-        self._half_dot_size = int(DOT_SIZE * self._scale / 2.)
+        self._turtle_offset = 0
         self._space = int(self._dot_size / 2.)
+        self._orientation = 0
         self.strategy = STRATEGY
 
         # Generate the sprites we'll need...
@@ -97,9 +102,12 @@ class Game():
                     self._dots[-1].type = False  # not set
 
         # Put a turtle at the center of the screen
+        self._turtle_images = []
+        self._rotate_turtle(self._new_turtle())
         pos = self._dots[int(THIRTEEN * THIRTEEN / 2)].get_xy()
-        self._turtle = Sprite(self._sprites, pos[0], pos[1], self._new_turtle())
-        self._turtle.move_relative((-self._half_dot_size, -self._half_dot_size))
+        self._turtle = Sprite(self._sprites, pos[0], pos[1],
+                              self._turtle_images[0])
+        self._turtle.move_relative((-self._turtle_offset, -self._turtle_offset))
 
         # and initialize a few variables we'll need.
         self._all_clear()
@@ -122,7 +130,8 @@ class Game():
         # Recenter the turtle
         pos = self._dots[int(THIRTEEN * THIRTEEN / 2)].get_xy()
         self._turtle.move(pos)
-        self._turtle.move_relative((-self._half_dot_size, -self._half_dot_size))
+        self._turtle.move_relative((-self._turtle_offset, -self._turtle_offset))
+        self._turtle.set_shape(self._turtle_images[0])
 
     def _initiating(self):
         return self._activity.initiating
@@ -171,8 +180,8 @@ class Game():
         for dot in self._dots:
             pos = dot.get_xy()
             # Turtle is offset
-            if pos[0] == turtle_pos[0] + self._half_dot_size and \
-               pos[1] == turtle_pos[1] + self._half_dot_size:
+            if pos[0] == turtle_pos[0] + self._turtle_offset and \
+               pos[1] == turtle_pos[1] + self._turtle_offset:
                 self._turtle_dot = self._dots.index(dot)
                 break
         if self._turtle_dot is None:
@@ -186,7 +195,10 @@ class Game():
         pos = self._dots[new_dot].get_xy()
         self._turtle.move(pos)
         # Turtle is offset
-        self._turtle.move_relative((-self._half_dot_size, -self._half_dot_size))
+        self._turtle.move_relative((-self._turtle_offset, -self._turtle_offset))
+        # And set the orientation
+        self._turtle.set_shape(self._turtle_images[self._orientation])
+
         return new_dot
 
     def _test_game_over(self, new_dot):
@@ -245,9 +257,22 @@ class Game():
         try:
             exec f in globals(), userdefined
             return userdefined['_turtle_strategy'](self, arg)
+        except ZeroDivisionError:
+            self._set_label('Python zero-divide error')
+        except ValueError, e:
+            self._set_label('Python value error' + str(e))
+        except SyntaxError, e:
+            self._set_label('Python syntax error' + str(e))
+        except NameError, e:
+            self._set_label('Python name error' + str(e))
+        except OverflowError:
+            self._set_label('Python overflow error')
+        except TypeError:
+            self._set_label('Python type error')
         except:
-            traceback.print_exc()
-            return None
+            self._set_label('Python error')
+        traceback.print_exc()
+        return None
 
     def _expose_cb(self, win, event):
         ''' Callback to handle window expose events '''
@@ -290,6 +315,25 @@ class Game():
             self._turtle() + \
             self._footer())
 
+    def _rotate_turtle(self, image):
+        w, h = image.get_width(), image.get_height()
+        nw = nh = int(sqrt(w * w + h * h))
+        print nw, nh, self._dot_size * 2
+        for i in range(6):
+            surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, nw, nh)
+            context = cairo.Context(surface)
+            context = gtk.gdk.CairoContext(context)
+            context.translate(nw / 2., nh / 2.)
+            context.rotate((30 + i * 60) * pi / 180.)
+            context.translate(-nw / 2., -nh / 2.)
+            context.set_source_pixbuf(image, (nw - w) / 2.,
+                                              (nh - h) / 2.)
+            context.rectangle(0, 0, nw, nh)
+            context.fill()
+            self._turtle_images.append(surface)
+        self._turtle_offset = int((nw - self._dot_size) / 2.) 
+        print self._turtle_offset
+
     def _header(self):
         return '<svg\n' + 'xmlns:svg="http://www.w3.org/2000/svg"\n' + \
             'xmlns="http://www.w3.org/2000/svg"\n' + \
@@ -307,7 +351,7 @@ class Game():
 
     def _turtle(self):
         svg = '<g\ntransform="scale(%.1f, %.1f)">\n' % (
-            self._svg_width / 55., self._svg_height / 55.)
+            self._svg_width / 60., self._svg_height / 60.)
         svg += '%s%s%s%s%s%s%s%s' % ('  <path d="M 27.5 48.3 ',
               'C 26.9 48.3 26.4 48.2 25.9 48.2 L 27.2 50.5 L 28.6 48.2 ',
               'C 28.2 48.2 27.9 48.3 27.5 48.3 Z" stroke_width="3.5" ',
