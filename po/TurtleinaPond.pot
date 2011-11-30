@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-29 17:51-0500\n"
+"POT-Creation-Date: 2011-11-29 22:02-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,58 +21,30 @@ msgstr ""
 msgid "Turtle in a Pond"
 msgstr ""
 
-#: game.py:154
-msgid "Turtle Circle"
-msgstr ""
-
-#: game.py:164
-msgid "It is your turn."
-msgstr ""
-
-#: game.py:172
-msgid "You took your turn."
-msgstr ""
-
 #: game.py:189
-msgid "Waiting for"
-msgstr ""
-
-#: game.py:240
 msgid "turtle wins"
 msgstr ""
 
-#: game.py:255
+#: game.py:204
 msgid "you win"
 msgstr ""
 
-#: game.py:301
+#: game.py:229
 msgid "Game over"
 msgstr ""
 
-#: TurtlePondActivity.py:112
+#: TurtlePondActivity.py:107
 msgid "Game"
 msgstr ""
 
-#: TurtlePondActivity.py:119
+#: TurtlePondActivity.py:114
 msgid "Start a new game."
 msgstr ""
 
-#: TurtlePondActivity.py:196
-msgid "Start a new game once everyone has joined."
+#: TurtlePondActivity.py:123
+msgid "Load strategy from Journal"
 msgstr ""
 
-#: TurtlePondActivity.py:205
-msgid "Only the sharer can start a new game."
-msgstr ""
-
-#: TurtlePondActivity.py:269
-msgid "has joined."
-msgstr ""
-
-#: path.py:30
-msgid "Paths"
-msgstr ""
-
-#: path.py:31
-msgid "Move tiles to make a path."
+#: TurtlePondActivity.py:128
+msgid "Load default strategy"
 msgstr ""
