@@ -18,7 +18,7 @@ from sugar.activity import activity
 from sugar import profile
 try:
     from sugar.graphics.toolbarbox import ToolbarBox
-    _have_toolbox = True
+    _have_toolbox = False
 except ImportError:
     _have_toolbox = False
 
@@ -115,7 +115,8 @@ class TurtlePondActivity(activity.Activity):
 
         self.status = label_factory(self.toolbar, '')
 
-        separator_factory(toolbox.toolbar, True, False)
+        if _have_toolbox:
+            separator_factory(toolbox.toolbar, True, False)
 
         self.load_python = button_factory(
             'pippy-openoff', self.toolbar,
