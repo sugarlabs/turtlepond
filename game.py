@@ -38,7 +38,7 @@ THIRTEEN = 13
 DOT_SIZE = 20
 CIRCLE = [[(0, -1), (1, 0), (0, 1), (-1, 1), (-1, 0), (-1, -1)],
           [(1, -1), (1, 0), (1, 1), (0, 1), (-1, 0), (0, -1)]]
-''' Simple strategy: randomly check for an open dot
+''' Simple strategy: head to daylight or randomly check for an open dot
     turtle is the (col, row) of the current turtle position '''
 STRATEGY_MSG = _('turtle is looking for any open dot')
 STRATEGY = 'def _turtle_strategy(self, turtle):\n\
@@ -48,10 +48,8 @@ STRATEGY = 'def _turtle_strategy(self, turtle):\n\
         if self._dots[dots[i]].type is None:\n\
             self._orientation = i\n\
             return self._dot_to_grid(dots[i])\n\
-    n = int(uniform(0, 4))\n\
-    if n > 0:\n\
-        if not self._dots[dots[self._orientation]].type:\n\
-            return self._dot_to_grid(dots[self._orientation])\n\
+    if self._daylight_ahead(turtle):\n\
+        return self._dot_to_grid(dots[self._orientation])\n\
     n = int(uniform(0, 6))\n\
     for i in range(6):\n\
         if not self._dots[dots[(i + n) % 6]].type:\n\
@@ -244,6 +242,20 @@ class Game():
         ''' Nothing left to do except show the results. '''
         self._set_label(msg)
         self.saw_game_over = True
+
+    def _daylight_ahead(self, pos):
+        ''' Returns true if there is a straight path to the edge from
+        the current position/orientation '''
+        dots = self._surrounding_dots(pos)
+        while True:
+            dot_type = self._dots[dots[self._orientation]].type
+            if dot_type is None:
+                return True
+            elif dot_type:
+                return False
+            else:  # keep looking
+                pos = self._dot_to_grid(dots[self._orientation])
+                dots = self._surrounding_dots(pos)
 
     def _surrounding_dots(self, pos):
         ''' Returns dots surrounding a position in the grid '''
