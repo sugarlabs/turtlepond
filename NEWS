@@ -1,5 +1,15 @@
 NEWS
 
+4
+
+ENHANCEMENTS:
+* More tools for building strategies
+* Slightly more challenging default behavior for turtle
+
+BUG FIX:
+* Fixed bug with errant button presses
+
+
 3
 
 ENHANCEMENTS:
