@@ -124,7 +124,7 @@ class TurtlePondActivity(activity.Activity):
             tooltip=_('Load strategy from Journal'))
 
         self.reload_strategy = button_factory(
-            'system-restart', self.toolbar,
+            'pippy-reload', self.toolbar,
             self._do_reset_strategy_cb,
             tooltip=_('Load default strategy'))
 
@@ -168,6 +168,7 @@ class TurtlePondActivity(activity.Activity):
         except IOError:
             _logger.debug("couldn't open %s" % dsobject.file_path)
         self._game.strategy = python_code
+        self._game.strategy_msg = _('customized strategy')
 
     def _chooser(self, filter, action):
         ''' Choose an object from the datastore and take some action '''

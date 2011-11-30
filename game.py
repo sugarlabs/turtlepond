@@ -40,7 +40,9 @@ CIRCLE = [[(0, -1), (1, 0), (0, 1), (-1, 1), (-1, 0), (-1, -1)],
           [(1, -1), (1, 0), (1, 1), (0, 1), (-1, 0), (0, -1)]]
 ''' Simple strategy: randomly check for an open dot
     turtle is the (col, row) of the current turtle position '''
+STRATEGY_MSG = _('turtle is looking for any open dot')
 STRATEGY = 'def _turtle_strategy(self, turtle):\n\
+    self._set_label(self.strategy_msg)\n\
     c = turtle[1] % 2\n\
     n = int(uniform(0, 6))\n\
     for i in range(6):\n\
@@ -77,6 +79,7 @@ class Game():
         self._space = int(self._dot_size / 2.)
         self._orientation = 0
         self.strategy = STRATEGY
+        self.strategy_msg = STRATEGY_MSG
 
         # Generate the sprites we'll need...
         self._sprites = Sprites(self._canvas)
@@ -132,6 +135,8 @@ class Game():
         self._turtle.move(pos)
         self._turtle.move_relative((-self._turtle_offset, -self._turtle_offset))
         self._turtle.set_shape(self._turtle_images[0])
+        self._set_label(
+            _('Click on the dots to keep the turtle from escaping.'))
 
     def _initiating(self):
         return self._activity.initiating
@@ -139,6 +144,7 @@ class Game():
     def reset_strategy(self):
         ''' Reload default strategy '''
         self.strategy = STRATEGY
+        self.strategy_msg = STRATEGY_MSG
 
     def new_game(self, saved_state=None):
         ''' Start a new game. '''
@@ -318,7 +324,6 @@ class Game():
     def _rotate_turtle(self, image):
         w, h = image.get_width(), image.get_height()
         nw = nh = int(sqrt(w * w + h * h))
-        print nw, nh, self._dot_size * 2
         for i in range(6):
             surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, nw, nh)
             context = cairo.Context(surface)
@@ -332,7 +337,6 @@ class Game():
             context.fill()
             self._turtle_images.append(surface)
         self._turtle_offset = int((nw - self._dot_size) / 2.) 
-        print self._turtle_offset
 
     def _header(self):
         return '<svg\n' + 'xmlns:svg="http://www.w3.org/2000/svg"\n' + \
