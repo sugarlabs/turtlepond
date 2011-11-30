@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-29 22:02-0500\n"
+"POT-Creation-Date: 2011-11-30 12:13-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,15 +21,23 @@ msgstr ""
 msgid "Turtle in a Pond"
 msgstr ""
 
-#: game.py:189
+#: game.py:43
+msgid "turtle is looking for any open dot"
+msgstr ""
+
+#: game.py:139
+msgid "Click on the dots to keep the turtle from escaping."
+msgstr ""
+
+#: game.py:215
 msgid "turtle wins"
 msgstr ""
 
-#: game.py:204
+#: game.py:230
 msgid "you win"
 msgstr ""
 
-#: game.py:229
+#: game.py:255
 msgid "Game over"
 msgstr ""
 
@@ -41,10 +49,14 @@ msgstr ""
 msgid "Start a new game."
 msgstr ""
 
-#: TurtlePondActivity.py:123
+#: TurtlePondActivity.py:124
 msgid "Load strategy from Journal"
 msgstr ""
 
-#: TurtlePondActivity.py:128
+#: TurtlePondActivity.py:129
 msgid "Load default strategy"
+msgstr ""
+
+#: TurtlePondActivity.py:171
+msgid "customized strategy"
 msgstr ""
