@@ -1,0 +1,8 @@
+[Activity]
+name = Turtle in a Pond
+activity_version = 1
+license = GPLv3
+bundle_id = org.sugarlabs.TurtlePondActivity
+exec = sugar-activity TurtlePondActivity.TurtlePondActivity
+icon = activity-turtlepond
+show_launcher = yes

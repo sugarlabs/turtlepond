@@ -1,0 +1,8 @@
+[Activity]
+name = Cat in a Circle
+activity_version = 1
+license = GPLv3
+bundle_id = org.sugarlabs.CatCircleActivity
+exec = sugar-activity CatCircleActivity.CatCircleActivity
+icon = activity-catcircle
+show_launcher = yes
