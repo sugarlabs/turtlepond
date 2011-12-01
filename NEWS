@@ -1,5 +1,15 @@
 NEWS
 
+5
+
+ENHANCEMENTS:
+* Added weighting function to turtle strategy (perhaps it is too difficult
+  now?)
+* Made dots a bit larger
+
+BUG FIX:
+* Added missing space in error messages
+
 4
 
 ENHANCEMENTS:
