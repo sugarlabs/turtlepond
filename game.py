@@ -48,8 +48,11 @@ STRATEGY = 'def _turtle_strategy(self, turtle):\n\
         if self._dots[dots[i]].type is None:\n\
             self._orientation = i\n\
             return self._dot_to_grid(dots[i])\n\
-    if self._daylight_ahead(turtle):\n\
-        return self._dot_to_grid(dots[self._orientation])\n\
+    dots_ordered_by_weight = self._ordered_weights(turtle)\n\
+    for i in range(6):\n\
+        self._orientation = dots.index(dots_ordered_by_weight[i])\n\
+        if self._daylight_ahead(turtle):\n\
+            return self._dot_to_grid(dots[self._orientation])\n\
     n = int(uniform(0, 6))\n\
     for i in range(6):\n\
         if not self._dots[dots[(i + n) % 6]].type:\n\
@@ -151,18 +154,21 @@ class Game():
         ''' Start a new game. '''
         self._all_clear()
 
-        for i in range(10):
+        # Fill in a few dots to start
+        for i in range(15):
             n = int(uniform(0, THIRTEEN * THIRTEEN))
             if self._dots[n].type is not None:
                 self._dots[n].type = True
                 self._dots[n].set_shape(self._new_dot(self._colors[STROKE]))
+
+        # Calculate the distances to the edge
+        self._initialize_weights()
 
     def _set_label(self, string):
         ''' Set the label in the toolbar or the window frame. '''
         self._activity.status.set_label(string)
 
     def _button_press_cb(self, win, event):
-        self._press = None
         win.grab_focus()
         x, y = map(int, event.get_coords())
 
@@ -171,16 +177,15 @@ class Game():
             return
 
         if spr.type is not None and not spr.type:
-            self._press = spr
             spr.type = True
             spr.set_shape(self._new_dot(self._colors[STROKE]))
+            self._weights[self._dots.index(spr)] = 1000
             self._test_game_over(self._move_the_turtle())
         return True
 
     def _move_the_turtle(self):
         ''' Move the turtle after each click '''
         turtle_pos = self._turtle.get_xy()
-        clicked_dot = self._dots.index(self._press)
         self._turtle_dot = None
         for dot in self._dots:
             pos = dot.get_xy()
@@ -193,7 +198,7 @@ class Game():
             _logger.debug('Cannot find the turtle...')
             return None
 
-        # Given the col and row of the turtle and the clicked dot, do something
+        # Given the col and row of the turtle, do something
         new_dot = self._grid_to_dot(
             self._my_strategy_import(self.strategy,
                                      self._dot_to_grid(self._turtle_dot)))
@@ -243,6 +248,18 @@ class Game():
         self._set_label(msg)
         self.saw_game_over = True
 
+    def _ordered_weights(self, pos):
+        ''' Returns the list of surrounding points sorted by their
+        distance to the edge '''
+        dots = self._surrounding_dots(pos)
+        dots_and_weights = []
+        for dot in dots:
+            dots_and_weights.append((dot, self._weights[dot]))
+        sorted_dots = sorted(dots_and_weights, key=lambda foo: foo[1])
+        for i in range(6):
+            dots[i] = sorted_dots[i][0]
+        return dots
+
     def _daylight_ahead(self, pos):
         ''' Returns true if there is a straight path to the edge from
         the current position/orientation '''
@@ -266,6 +283,20 @@ class Game():
             row = pos[1] + CIRCLE[evenodd][i][1]
             dots.append(self._grid_to_dot((col, row)))
         return dots
+
+    def _initialize_weights(self):
+        ''' How many steps to an edge? '''
+        self._weights = []
+        for d, dot in enumerate(self._dots):
+            if dot.type is None:
+                self._weights.append(0)
+            elif dot.type:
+                self._weights.append(1000)
+            else:
+                pos = self._dot_to_grid(d)
+                pos2 = (THIRTEEN - pos[0], THIRTEEN - pos[1])
+                self._weights.append(min(min(pos[0], pos2[0]),
+                                         min(pos[1], pos2[1])))
 
     def _my_strategy_import(self, f, arg):
         ''' Run Python code passed as argument '''
