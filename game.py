@@ -75,10 +75,10 @@ class Game():
 
         self._width = gtk.gdk.screen_width()
         self._height = gtk.gdk.screen_height() - (GRID_CELL_SIZE * 1.5)
-        self._scale = self._height / (14.0 * DOT_SIZE * 1.5)
+        self._scale = self._height / (14.0 * DOT_SIZE * 1.2)
         self._dot_size = int(DOT_SIZE * self._scale)
         self._turtle_offset = 0
-        self._space = int(self._dot_size / 2.)
+        self._space = int(self._dot_size / 5.)
         self._orientation = 0
         self.strategy = STRATEGY
         self.strategy_msg = STRATEGY_MSG
@@ -273,18 +273,18 @@ class Game():
         try:
             exec f in globals(), userdefined
             return userdefined['_turtle_strategy'](self, arg)
-        except ZeroDivisionError:
-            self._set_label('Python zero-divide error')
+        except ZeroDivisionError, e:
+            self._set_label('Python zero-divide error: %s' % (str(e)))
         except ValueError, e:
-            self._set_label('Python value error' + str(e))
+            self._set_label('Python value error: %s' % (str(e)))
         except SyntaxError, e:
-            self._set_label('Python syntax error' + str(e))
+            self._set_label('Python syntax error: %s' % (str(e)))
         except NameError, e:
-            self._set_label('Python name error' + str(e))
-        except OverflowError:
-            self._set_label('Python overflow error')
-        except TypeError:
-            self._set_label('Python type error')
+            self._set_label('Python name error: %s' % (str(e)))
+        except OverflowError, e:
+            self._set_label('Python overflow error: %s' % (str(e)))
+        except TypeError, e:
+            self._set_label('Python type error: %s' % (str(e)))
         except:
             self._set_label('Python error')
         traceback.print_exc()
