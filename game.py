@@ -51,27 +51,22 @@ BEGINNER_STRATEGY = 'def _turtle_strategy(self, turtle):\n\
             return self._dot_to_grid(dots[(i + n) % 6])\n\
     self._orientation = (i + n) % 6\n\
     return turtle\n'
-INTERMEDIATE_MSG = _('turtle is looking for any open dot')
+INTERMEDIATE_MSG = _('looking for an open path')
 INTERMEDIATE_STRATEGY = 'def _turtle_strategy(self, turtle):\n\
-    self._set_label(self.strategy_msg)\n\
     dots = self._surrounding_dots(turtle)\n\
-    for i in range(6):\n\
+    for i in range(6):  # search for an edge\n\
         if self._dots[dots[i]].type is None:\n\
             self._orientation = i\n\
             return self._dot_to_grid(dots[i])\n\
-    dots_ordered_by_weight = self._ordered_weights(turtle)\n\
-    for i in range(6):\n\
-        self._orientation = dots.index(dots_ordered_by_weight[i])\n\
-        if self._daylight_ahead(turtle):\n\
-            return self._dot_to_grid(dots[self._orientation])\n\
-    n = int(uniform(0, 6))\n\
-    for i in range(6):\n\
+    if self._daylight_ahead(turtle):\n\
+        return self._dot_to_grid(dots[self._orientation])\n\
+    n = int(uniform(0, 6))  # choose a random orientation\n\
+    for i in range(6):  # search for an opening\n\
         if not self._dots[dots[(i + n) % 6]].type:\n\
             self._orientation = (i + n) % 6\n\
             return self._dot_to_grid(dots[(i + n) % 6])\n\
-    self._orientation = (i + n) % 6\n\
     return turtle\n'
-EXPERT_MSG = _('turtle is looking for any open dot')
+EXPERT_MSG = _('using a weight function')
 EXPERT_STRATEGY = 'def _turtle_strategy(self, turtle):\n\
     self._set_label(self.strategy_msg)\n\
     dots = self._surrounding_dots(turtle)\n\
@@ -187,7 +182,8 @@ class Game():
 
     def reset_strategy(self):
         ''' Reload default strategy '''
-        self.custom_strategy = self.strategies[2]
+        self.custom_strategy = EXPERT_STRATEGY
+        self.custom_msg = _('strategy from Journal')
         self.level = 3
 
     def new_game(self, saved_state=None):

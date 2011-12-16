@@ -191,8 +191,8 @@ class TurtlePondActivity(activity.Activity):
         ''' Load Python code from the Journal. '''
         self._chooser('org.laptop.Pippy',
                 self._load_python_code_from_journal)
+        self.custom_button.set_active(True)
         self._game.level = CUSTOM
-        # FIXME: set radio button
         self._game.new_game()
 
     def _load_python_code_from_journal(self, dsobject):
@@ -205,8 +205,8 @@ class TurtlePondActivity(activity.Activity):
             file_handle.close()
         except IOError:
             _logger.debug("couldn't open %s" % dsobject.file_path)
-        self._game.strategy = python_code
-        self._game.strategy_msg = _('customized strategy')
+        self._game.strategies[CUSTOM] = python_code
+        self._game.msgs[CUSTOM] = _('customized strategy')
 
     def _chooser(self, filter, action):
         ''' Choose an object from the datastore and take some action '''
