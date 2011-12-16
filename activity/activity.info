@@ -1,6 +1,6 @@
 [Activity]
 name = Turtle in a Pond
-activity_version = 5
+activity_version = 6
 license = GPLv3
 bundle_id = org.sugarlabs.TurtlePondActivity
 exec = sugar-activity TurtlePondActivity.TurtlePondActivity
