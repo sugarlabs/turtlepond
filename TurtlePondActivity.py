@@ -52,7 +52,8 @@ BEGINNER = 0
 INTERMEDIATE = 1
 EXPERT = 2
 CUSTOM = 3
-LEVEL_LABELS = [_('beginner'), _('intermediate'), _('expert'), _('custom')]
+LEVEL_LABELS = [_('Beginner'), _('Intermediate'), _('Expert'),
+                _('My strategy')]
 
 
 class TurtlePondActivity(activity.Activity):
@@ -155,11 +156,6 @@ class TurtlePondActivity(activity.Activity):
             self._do_load_python_cb,
             tooltip=_('Load strategy from Journal'))
 
-        self.reload_strategy = button_factory(
-            'pippy-reload', self.toolbar,
-            self._do_reset_strategy_cb,
-            tooltip=_('Load default strategy'))
-
         if _have_toolbox:
             stop_button = StopButton(self)
             stop_button.props.accelerator = '<Ctrl>q'
@@ -167,6 +163,9 @@ class TurtlePondActivity(activity.Activity):
             stop_button.show()
 
     def _level_cb(self, button, level):
+        if level == CUSTOM and self._game.strategies[CUSTOM] is None:
+            level = EXPERT
+            self.expert_button.set_active(True)
         self._game.level = level
         self._game.new_game()
 
@@ -182,16 +181,12 @@ class TurtlePondActivity(activity.Activity):
         """ Restore the game state from metadata """
         return
 
-    def _do_reset_strategy_cb(self, button):
-        ''' Reset the strategy to default '''
-        self._game.reset_strategy()
-        self._game.new_game()
-
     def _do_load_python_cb(self, button):
         ''' Load Python code from the Journal. '''
         self._chooser('org.laptop.Pippy',
                 self._load_python_code_from_journal)
-        self.custom_button.set_active(True)
+        if self._game.strategies[CUSTOM] is not None:
+            self.custom_button.set_active(True)
         self._game.level = CUSTOM
         self._game.new_game()
 
@@ -206,7 +201,6 @@ class TurtlePondActivity(activity.Activity):
         except IOError:
             _logger.debug("couldn't open %s" % dsobject.file_path)
         self._game.strategies[CUSTOM] = python_code
-        self._game.msgs[CUSTOM] = _('customized strategy')
 
     def _chooser(self, filter, action):
         ''' Choose an object from the datastore and take some action '''
