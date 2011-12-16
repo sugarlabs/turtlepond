@@ -40,8 +40,39 @@ CIRCLE = [[(0, -1), (1, 0), (0, 1), (-1, 1), (-1, 0), (-1, -1)],
           [(1, -1), (1, 0), (1, 1), (0, 1), (-1, 0), (0, -1)]]
 ''' Simple strategy: head to daylight or randomly check for an open dot
     turtle is the (col, row) of the current turtle position '''
-STRATEGY_MSG = _('turtle is looking for any open dot')
-STRATEGY = 'def _turtle_strategy(self, turtle):\n\
+BEGINNER_MSG = _('random')
+BEGINNER_STRATEGY = 'def _turtle_strategy(self, turtle):\n\
+    self._set_label(self.strategy_msg)\n\
+    dots = self._surrounding_dots(turtle)\n\
+    n = int(uniform(0, 6))\n\
+    for i in range(6):\n\
+        if not self._dots[dots[(i + n) % 6]].type:\n\
+            self._orientation = (i + n) % 6\n\
+            return self._dot_to_grid(dots[(i + n) % 6])\n\
+    self._orientation = (i + n) % 6\n\
+    return turtle\n'
+INTERMEDIATE_MSG = _('turtle is looking for any open dot')
+INTERMEDIATE_STRATEGY = 'def _turtle_strategy(self, turtle):\n\
+    self._set_label(self.strategy_msg)\n\
+    dots = self._surrounding_dots(turtle)\n\
+    for i in range(6):\n\
+        if self._dots[dots[i]].type is None:\n\
+            self._orientation = i\n\
+            return self._dot_to_grid(dots[i])\n\
+    dots_ordered_by_weight = self._ordered_weights(turtle)\n\
+    for i in range(6):\n\
+        self._orientation = dots.index(dots_ordered_by_weight[i])\n\
+        if self._daylight_ahead(turtle):\n\
+            return self._dot_to_grid(dots[self._orientation])\n\
+    n = int(uniform(0, 6))\n\
+    for i in range(6):\n\
+        if not self._dots[dots[(i + n) % 6]].type:\n\
+            self._orientation = (i + n) % 6\n\
+            return self._dot_to_grid(dots[(i + n) % 6])\n\
+    self._orientation = (i + n) % 6\n\
+    return turtle\n'
+EXPERT_MSG = _('turtle is looking for any open dot')
+EXPERT_STRATEGY = 'def _turtle_strategy(self, turtle):\n\
     self._set_label(self.strategy_msg)\n\
     dots = self._surrounding_dots(turtle)\n\
     for i in range(6):\n\
@@ -83,8 +114,14 @@ class Game():
         self._turtle_offset = 0
         self._space = int(self._dot_size / 5.)
         self._orientation = 0
-        self.strategy = STRATEGY
-        self.strategy_msg = STRATEGY_MSG
+        self.level = 0
+        self.custom_strategy = EXPERT_STRATEGY
+        self.strategies = [BEGINNER_STRATEGY, INTERMEDIATE_STRATEGY,
+                           EXPERT_STRATEGY, self.custom_strategy]
+        self.msgs = [BEGINNER_MSG, INTERMEDIATE_MSG,
+                           EXPERT_MSG, _('strategy from Journal')]
+        self.strategy = self.strategies[self.level]
+        self.strategy_msg = self.msgs[self.level]
 
         # Generate the sprites we'll need...
         self._sprites = Sprites(self._canvas)
@@ -139,16 +176,19 @@ class Game():
         self._turtle.move(pos)
         self._turtle.move_relative((-self._turtle_offset, -self._turtle_offset))
         self._turtle.set_shape(self._turtle_images[0])
+        self._set_label('')
+        '''
         self._set_label(
             _('Click on the dots to keep the turtle from escaping.'))
+        '''
 
     def _initiating(self):
         return self._activity.initiating
 
     def reset_strategy(self):
         ''' Reload default strategy '''
-        self.strategy = STRATEGY
-        self.strategy_msg = STRATEGY_MSG
+        self.custom_strategy = self.strategies[2]
+        self.level = 3
 
     def new_game(self, saved_state=None):
         ''' Start a new game. '''
@@ -163,6 +203,8 @@ class Game():
 
         # Calculate the distances to the edge
         self._initialize_weights()
+        self.strategy = self.strategies[self.level]
+        self.strategy_msg = self.msgs[self.level]
 
     def _set_label(self, string):
         ''' Set the label in the toolbar or the window frame. '''

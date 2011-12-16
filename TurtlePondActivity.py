@@ -35,7 +35,7 @@ from sugar.datastore import datastore
 from sugar.graphics.objectchooser import ObjectChooser
 
 from toolbar_utils import button_factory, image_factory, label_factory, \
-    separator_factory
+    separator_factory, radio_factory
 
 from gettext import gettext as _
 import locale
@@ -48,10 +48,11 @@ from utils import svg_str_to_pixbuf
 import logging
 _logger = logging.getLogger('turtle-in-a-pond-activity')
 
-
-SERVICE = 'org.sugarlabs.TurtlePondActivity'
-IFACE = SERVICE
-PATH = '/org/augarlabs/TurtlePondActivity'
+BEGINNER = 0
+INTERMEDIATE = 1
+EXPERT = 2
+CUSTOM = 3
+LEVEL_LABELS = [_('beginner'), _('intermediate'), _('expert'), _('custom')]
 
 
 class TurtlePondActivity(activity.Activity):
@@ -113,6 +114,37 @@ class TurtlePondActivity(activity.Activity):
             'new-game', self.toolbar, self._new_game_cb,
             tooltip=_('Start a new game.'))
 
+        separator_factory(self.toolbar, False, True)
+
+        self.beginner_button = radio_factory(
+            'beginner',
+            self.toolbar,
+            self._level_cb,
+            cb_arg=BEGINNER,
+            tooltip=LEVEL_LABELS[BEGINNER],
+            group=None)
+        self.intermediate_button = radio_factory(
+            'intermediate',
+            self.toolbar,
+            self._level_cb,
+            cb_arg=INTERMEDIATE,
+            tooltip=LEVEL_LABELS[INTERMEDIATE],
+            group=self.beginner_button)
+        self.expert_button = radio_factory(
+            'expert',
+            self.toolbar,
+            self._level_cb,
+            cb_arg=EXPERT,
+            tooltip=LEVEL_LABELS[EXPERT],
+            group=self.beginner_button)
+        self.custom_button = radio_factory(
+            'view-source',
+            self.toolbar,
+            self._level_cb,
+            cb_arg=CUSTOM,
+            tooltip=LEVEL_LABELS[CUSTOM],
+            group=self.beginner_button)
+
         self.status = label_factory(self.toolbar, '')
 
         if _have_toolbox:
@@ -133,6 +165,10 @@ class TurtlePondActivity(activity.Activity):
             stop_button.props.accelerator = '<Ctrl>q'
             toolbox.toolbar.insert(stop_button, -1)
             stop_button.show()
+
+    def _level_cb(self, button, level):
+        self._game.level = level
+        self._game.new_game()
 
     def _new_game_cb(self, button=None):
         ''' Start a new game. '''
@@ -155,6 +191,8 @@ class TurtlePondActivity(activity.Activity):
         ''' Load Python code from the Journal. '''
         self._chooser('org.laptop.Pippy',
                 self._load_python_code_from_journal)
+        self._game.level = CUSTOM
+        # FIXME: set radio button
         self._game.new_game()
 
     def _load_python_code_from_journal(self, dsobject):
