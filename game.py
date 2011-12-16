@@ -154,17 +154,12 @@ class Game():
 
     def _all_clear(self):
         ''' Things to reinitialize when starting up a new game. '''
-        self._press = None
-        self.last_spr_moved = None
-        self.whos_turn = 0
-        self._waiting_for_my_turn = False
-        self.saw_game_over = False
-
         # Clear dots
         for dot in self._dots:
             if dot.type:
                 dot.type = False
                 dot.set_shape(self._new_dot(self._colors[FILL]))                
+            dot.set_label('')
 
         # Recenter the turtle
         pos = self._dots[int(THIRTEEN * THIRTEEN / 2)].get_xy()
@@ -221,20 +216,26 @@ class Game():
             self._test_game_over(self._move_the_turtle())
         return True
 
-    def _move_the_turtle(self):
-        ''' Move the turtle after each click '''
+    def _find_the_turtle(self):
         turtle_pos = self._turtle.get_xy()
-        self._turtle_dot = None
+        turtle_dot = None
         for dot in self._dots:
             pos = dot.get_xy()
             # Turtle is offset
             if pos[0] == turtle_pos[0] + self._turtle_offset and \
                pos[1] == turtle_pos[1] + self._turtle_offset:
-                self._turtle_dot = self._dots.index(dot)
+                turtle_dot = self._dots.index(dot)
                 break
-        if self._turtle_dot is None:
+        if turtle_dot is None:
             _logger.debug('Cannot find the turtle...')
             return None
+        return turtle_dot
+
+    def _move_the_turtle(self):
+        ''' Move the turtle after each click '''
+        self._turtle_dot = self._find_the_turtle()
+        if self._turtle_dot is None:
+            return
 
         # Given the col and row of the turtle, do something
         new_dot = self._grid_to_dot(
@@ -254,7 +255,9 @@ class Game():
         if new_dot is None:
             return
         if self._dots[new_dot].type is None:
-            self._set_label(_('turtle wins'))
+            # self._set_label(_('turtle wins'))
+            self._once_around = False
+            self._happy_turtle_dance()
             return True
         c = int(self._turtle_dot / THIRTEEN) % 2
         if self._dots[
@@ -269,8 +272,10 @@ class Game():
             new_dot + CIRCLE[c][4][0] + THIRTEEN * CIRCLE[c][4][1]].type and \
            self._dots[
             new_dot + CIRCLE[c][5][0] + THIRTEEN * CIRCLE[c][5][1]].type:
-            self._set_label(_('you win'))
-            return True
+           # self._set_label(_('you win'))
+           for dot in self._dots:
+               dot.set_label(':)')
+           return True
         return False
 
     def _grid_to_dot(self, pos):
@@ -281,10 +286,32 @@ class Game():
         ''' calculate the grid column and row for a dot '''
         return [dot % THIRTEEN, int(dot / THIRTEEN)]
 
-    def game_over(self, msg=_('Game over')):
-        ''' Nothing left to do except show the results. '''
-        self._set_label(msg)
-        self.saw_game_over = True
+    def _happy_turtle_dance(self):
+        ''' Turtle dances along the edge '''
+        i = self._find_the_turtle()
+        if i == 0: 
+            if self._once_around:
+                return
+            else:
+                self._once_around = True
+        _logger.debug(i)
+        x, y = self._dot_to_grid(i)
+        if y == 0:
+            x += 1
+        if x == 0:
+            y -= 1
+        if x == THIRTEEN - 1:
+            y += 1
+        if y == THIRTEEN - 1:
+            x -= 1
+        i = self._grid_to_dot((x, y))
+        self._dots[i].set_label(':)')
+        self._turtle.move(self._dots[i].get_xy())
+        self._turtle.move_relative((-self._turtle_offset, -self._turtle_offset))
+        self._orientation += 1
+        self._orientation %= 6
+        self._turtle.set_shape(self._turtle_images[self._orientation])
+        gobject.timeout_add(250, self._happy_turtle_dance)
 
     def _ordered_weights(self, pos):
         ''' Returns the list of surrounding points sorted by their
