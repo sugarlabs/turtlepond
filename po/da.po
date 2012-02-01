@@ -6,11 +6,11 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-30 12:13-0500\n"
-"PO-Revision-Date: 2012-01-24 06:08+0200\n"
+"POT-Creation-Date: 2012-01-27 00:33-0500\n"
+"PO-Revision-Date: 2012-02-01 19:58+0200\n"
 "Last-Translator: Aputsiaq Niels <aj@isit.gl>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language: da\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,42 +21,51 @@ msgstr ""
 msgid "Turtle in a Pond"
 msgstr "Skildpadde i en dam"
 
-#: game.py:43
-msgid "turtle is looking for any open dot"
-msgstr "skildpadde kigger efter en åben prik"
+#: TurtlePondActivity.py:55
+msgid "Beginner"
+msgstr "Begynder"
 
-#: game.py:139
-msgid "Click on the dots to keep the turtle from escaping."
-msgstr "Klik på prikkerne for at undgå at skildpadden stikker af."
+#: TurtlePondActivity.py:55
+msgid "Intermediate"
+msgstr "Øvet"
 
-#: game.py:215
-msgid "turtle wins"
-msgstr "skildpadde vinder"
+#: TurtlePondActivity.py:55
+msgid "Expert"
+msgstr "Ekspert"
 
-#: game.py:230
-msgid "you win"
-msgstr "du vinder"
+#: TurtlePondActivity.py:56
+msgid "My strategy"
+msgstr "Min strategi"
 
-#: game.py:255
-msgid "Game over"
-msgstr "Spillet er slut"
-
-#: TurtlePondActivity.py:107
+#: TurtlePondActivity.py:109
 msgid "Game"
 msgstr "Spil"
 
-#: TurtlePondActivity.py:114
+#: TurtlePondActivity.py:116
 msgid "Start a new game."
 msgstr "Start et nyt spil."
 
-#: TurtlePondActivity.py:124
+#: TurtlePondActivity.py:157
 msgid "Load strategy from Journal"
 msgstr "Indlæs strategi fra journal"
 
-#: TurtlePondActivity.py:129
-msgid "Load default strategy"
-msgstr "Indlæs standard-strategi"
+#~ msgid "turtle is looking for any open dot"
+#~ msgstr "skildpadde kigger efter en åben prik"
 
-#: TurtlePondActivity.py:171
-msgid "customized strategy"
-msgstr "tilpasset strategi"
+#~ msgid "Click on the dots to keep the turtle from escaping."
+#~ msgstr "Klik på prikkerne for at undgå at skildpadden stikker af."
+
+#~ msgid "turtle wins"
+#~ msgstr "skildpadde vinder"
+
+#~ msgid "you win"
+#~ msgstr "du vinder"
+
+#~ msgid "Game over"
+#~ msgstr "Spillet er slut"
+
+#~ msgid "Load default strategy"
+#~ msgstr "Indlæs standard-strategi"
+
+#~ msgid "customized strategy"
+#~ msgstr "tilpasset strategi"
