@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-11-30 12:13-0500\n"
-"PO-Revision-Date: 2012-01-23 21:22+0200\n"
+"POT-Creation-Date: 2012-02-15 00:33-0500\n"
+"PO-Revision-Date: 2012-01-31 06:42+0200\n"
 "Last-Translator: Chris <cjl@laptop.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: en_US\n"
@@ -21,42 +21,51 @@ msgstr ""
 msgid "Turtle in a Pond"
 msgstr "Turtle in a Pond"
 
-#: game.py:43
-msgid "turtle is looking for any open dot"
-msgstr "turtle is looking for any open dot"
+#: TurtlePondActivity.py:55
+msgid "Beginner"
+msgstr "Beginner"
 
-#: game.py:139
-msgid "Click on the dots to keep the turtle from escaping."
-msgstr "Click on the dots to keep the turtle from escaping."
+#: TurtlePondActivity.py:55
+msgid "Intermediate"
+msgstr "Intermediate"
 
-#: game.py:215
-msgid "turtle wins"
-msgstr "turtle wins"
+#: TurtlePondActivity.py:55
+msgid "Expert"
+msgstr "Expert"
 
-#: game.py:230
-msgid "you win"
-msgstr "you win"
+#: TurtlePondActivity.py:56
+msgid "My strategy"
+msgstr "My strategy"
 
-#: game.py:255
-msgid "Game over"
-msgstr "Game over"
-
-#: TurtlePondActivity.py:107
+#: TurtlePondActivity.py:109
 msgid "Game"
 msgstr "Game"
 
-#: TurtlePondActivity.py:114
+#: TurtlePondActivity.py:116
 msgid "Start a new game."
 msgstr "Start a new game."
 
-#: TurtlePondActivity.py:124
+#: TurtlePondActivity.py:157
 msgid "Load strategy from Journal"
 msgstr "Load strategy from Journal"
 
-#: TurtlePondActivity.py:129
-msgid "Load default strategy"
-msgstr "Load default strategy"
+#~ msgid "turtle is looking for any open dot"
+#~ msgstr "turtle is looking for any open dot"
 
-#: TurtlePondActivity.py:171
-msgid "customized strategy"
-msgstr "customized strategy"
+#~ msgid "Click on the dots to keep the turtle from escaping."
+#~ msgstr "Click on the dots to keep the turtle from escaping."
+
+#~ msgid "turtle wins"
+#~ msgstr "turtle wins"
+
+#~ msgid "you win"
+#~ msgstr "you win"
+
+#~ msgid "Game over"
+#~ msgstr "Game over"
+
+#~ msgid "Load default strategy"
+#~ msgstr "Load default strategy"
+
+#~ msgid "customized strategy"
+#~ msgstr "customized strategy"
