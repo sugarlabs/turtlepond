@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-02-15 00:33-0500\n"
-"PO-Revision-Date: 2012-02-29 06:34+0200\n"
-"Last-Translator: sit_nawarat <field_haku@hotmail.com>\n"
+"PO-Revision-Date: 2012-03-12 10:59+0200\n"
+"Last-Translator: Meechai <malaku38@hotmail.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: th\n"
 "MIME-Version: 1.0\n"
@@ -23,15 +23,15 @@ msgstr "เต่าในบ่อ"
 
 #: TurtlePondActivity.py:55
 msgid "Beginner"
-msgstr "ผู้เริ่มต้น"
+msgstr "ระดับเริ่มต้น"
 
 #: TurtlePondActivity.py:55
 msgid "Intermediate"
-msgstr "ปานกลาง"
+msgstr "ระดับปานกลาง"
 
 #: TurtlePondActivity.py:55
 msgid "Expert"
-msgstr "ผู้เชี่ยวชาญ"
+msgstr "ระดับผู้เชี่ยวชาญ"
 
 #: TurtlePondActivity.py:56
 msgid "My strategy"
@@ -39,12 +39,12 @@ msgstr "กลยุทธ์ของฉัน"
 
 #: TurtlePondActivity.py:109
 msgid "Game"
-msgstr "เกมส์"
+msgstr "เกม"
 
 #: TurtlePondActivity.py:116
 msgid "Start a new game."
-msgstr "เริ่มเกมส์ใหม่"
+msgstr "เริ่มเกมใหม่"
 
 #: TurtlePondActivity.py:157
 msgid "Load strategy from Journal"
-msgstr "โหลดกลยุทธ์จากบทความ"
+msgstr "โหลดกลยุทธ์จากบันทึกประจำวัน"
