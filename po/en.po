@@ -1,0 +1,71 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-02-15 00:33-0500\n"
+"PO-Revision-Date: 2012-01-31 06:29+0200\n"
+"Last-Translator: Chris <cjl@laptop.org>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.0.5\n"
+
+#: activity/activity.info:2
+msgid "Turtle in a Pond"
+msgstr "Turtle in a Pond"
+
+#: TurtlePondActivity.py:55
+msgid "Beginner"
+msgstr "Beginner"
+
+#: TurtlePondActivity.py:55
+msgid "Intermediate"
+msgstr "Intermediate"
+
+#: TurtlePondActivity.py:55
+msgid "Expert"
+msgstr "Expert"
+
+#: TurtlePondActivity.py:56
+msgid "My strategy"
+msgstr "My strategy"
+
+#: TurtlePondActivity.py:109
+msgid "Game"
+msgstr "Game"
+
+#: TurtlePondActivity.py:116
+msgid "Start a new game."
+msgstr "Start a new game."
+
+#: TurtlePondActivity.py:157
+msgid "Load strategy from Journal"
+msgstr "Load strategy from Journal"
+
+#~ msgid "turtle is looking for any open dot"
+#~ msgstr "turtle is looking for any open dot"
+
+#~ msgid "Click on the dots to keep the turtle from escaping."
+#~ msgstr "Click on the dots to keep the turtle from escaping."
+
+#~ msgid "turtle wins"
+#~ msgstr "turtle wins"
+
+#~ msgid "you win"
+#~ msgstr "you win"
+
+#~ msgid "Game over"
+#~ msgstr "Game over"
+
+#~ msgid "Load default strategy"
+#~ msgstr "Load default strategy"
+
+#~ msgid "customized strategy"
+#~ msgstr "customized strategy"
