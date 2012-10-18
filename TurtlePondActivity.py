@@ -1,5 +1,6 @@
 #Copyright (c) 2011 Walter Bender
-
+# Port To GTK3:
+# Ignacio Rodriguez <ignaciorodriguez@sugarlabs.org>
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 3 of the License, or
@@ -9,30 +10,29 @@
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
+from gi.repository import Gtk, GObject, Gdk
 
-import gtk
-import gobject
 
-import sugar
-from sugar.activity import activity
-from sugar import profile
+import sugar3
+from sugar3.activity import activity
+from sugar3 import profile
 try:
-    from sugar.graphics.toolbarbox import ToolbarBox
+    from sugar3.graphics.toolbarbox import ToolbarBox
     _have_toolbox = True
 except ImportError:
     _have_toolbox = False
 
 if _have_toolbox:
-    from sugar.bundle.activitybundle import ActivityBundle
-    from sugar.activity.widgets import ActivityToolbarButton
-    from sugar.activity.widgets import StopButton
-    from sugar.graphics.toolbarbox import ToolbarButton
+    from sugar3.bundle.activitybundle import ActivityBundle
+    from sugar3.activity.widgets import ActivityToolbarButton
+    from sugar3.activity.widgets import StopButton
+    from sugar3.graphics.toolbarbox import ToolbarButton
 
-from sugar.graphics.toolbutton import ToolButton
-from sugar.graphics.menuitem import MenuItem
-from sugar.graphics.icon import Icon
-from sugar.datastore import datastore
-from sugar.graphics.objectchooser import ObjectChooser
+from sugar3.graphics.toolbutton import ToolButton
+from sugar3.graphics.menuitem import MenuItem
+from sugar3.graphics.icon import Icon
+from sugar3.datastore import datastore
+from sugar3.graphics.objectchooser import ObjectChooser
 
 from toolbar_utils import button_factory, image_factory, label_factory, \
     separator_factory, radio_factory
@@ -71,9 +71,9 @@ class TurtlePondActivity(activity.Activity):
         self._setup_toolbars(_have_toolbox)
 
         # Create a canvas
-        canvas = gtk.DrawingArea()
-        canvas.set_size_request(gtk.gdk.screen_width(), \
-                                gtk.gdk.screen_height())
+        canvas = Gtk.DrawingArea()
+        canvas.set_size_request(Gdk.Screen.width(), \
+                                Gdk.Screen.height())
         self.set_canvas(canvas)
         canvas.show()
         self.show_all()
@@ -103,7 +103,7 @@ class TurtlePondActivity(activity.Activity):
 
         else:
             # Use pre-0.86 toolbar design
-            games_toolbar = gtk.Toolbar()
+            games_toolbar = Gtk.Toolbar()
             toolbox = activity.ActivityToolbox(self)
             self.set_toolbox(toolbox)
             toolbox.add_toolbar(_('Game'), games_toolbar)
@@ -210,11 +210,11 @@ class TurtlePondActivity(activity.Activity):
         except TypeError:
             chooser = ObjectChooser(
                 None, self,
-                gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT)
+                Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT)
         if chooser is not None:
             try:
                 result = chooser.run()
-                if result == gtk.RESPONSE_ACCEPT:
+                if result == Gtk.ResponseType.ACCEPT:
                     dsobject = chooser.get_selected_object()
                     action(dsobject)
                     dsobject.destroy()
