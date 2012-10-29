@@ -25,6 +25,13 @@
   </metadata>
   <defs
      id="defs4" />
+  <rect
+     width="55"
+     height="55"
+     x="0"
+     y="0"
+     id="rect2995"
+     style="fill:#282828;fill-opacity:1;stroke:none" />
   <path
      d="m 34.724577,28.082626 a 8.7394066,8.7394066 0 1 1 -17.478813,0 8.7394066,8.7394066 0 1 1 17.478813,0 z"
      transform="matrix(1.4649286,0,0,1.4649286,-10.566419,-13.639042)"
