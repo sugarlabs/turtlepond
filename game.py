@@ -139,7 +139,6 @@ class Game():
         self._rotate_turtle(self._new_turtle())
         self._turtle = Sprite(self._sprites, 0, 0,
                               self._turtle_images[0])
-        self._turtle_offset = int((self._dot_size) / 2.) 
         self._move_turtle(self._dots[int(THIRTEEN * THIRTEEN / 2)].get_xy())
 
         # ...and initialize.
@@ -412,14 +411,14 @@ class Game():
         for i in range(6):
             surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, nw, nh)
             context = cairo.Context(surface)
-            Gdk.cairo_set_source_pixbuf(context, image, 0, 0)
-            context.translate(nw / 2., nh / 2.)
+            context.translate(w / 2., h / 2.)
             context.rotate((30 + i * 60) * pi / 180.)
-            context.translate(-nw / 2., -nh / 2.)
+            context.translate(-w / 2., -h / 2.)
+            Gdk.cairo_set_source_pixbuf(context, image, 0, 0)
             context.rectangle(0, 0, nw, nh)
             context.fill()
             self._turtle_images.append(surface)
-        self._turtle_offset = int((nw - self._dot_size) / 2.) 
+        self._turtle_offset = int(self._dot_size / 2.)
 
     def _header(self):
         return '<svg\n' + 'xmlns:svg="http://www.w3.org/2000/svg"\n' + \
