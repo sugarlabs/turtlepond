@@ -411,7 +411,7 @@ class Game():
         for i in range(6):
             surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, nw, nh)
             context = cairo.Context(surface)
-            Gdk.cairo_set_source_pixbuf(context, pixbuf, 0, 0)
+            Gdk.cairo_set_source_pixbuf(context, image, 0, 0)
             context.translate(nw / 2., nh / 2.)
             context.rotate((30 + i * 60) * pi / 180.)
             context.translate(-nw / 2., -nh / 2.)
