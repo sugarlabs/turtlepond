@@ -139,6 +139,7 @@ class Game():
         self._rotate_turtle(self._new_turtle())
         self._turtle = Sprite(self._sprites, 0, 0,
                               self._turtle_images[0])
+        self._turtle_offset = int((self._dot_size) / 2.) 
         self._move_turtle(self._dots[int(THIRTEEN * THIRTEEN / 2)].get_xy())
 
         # ...and initialize.
@@ -189,7 +190,7 @@ class Game():
         win.grab_focus()
         x, y = map(int, event.get_coords())
 
-        spr = self._sprites.find_sprite((x, y))
+        spr = self._sprites.find_sprite((x, y), inverse=True)
         if spr == None:
             return
 
