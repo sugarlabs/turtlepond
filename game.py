@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 #Copyright (c) 2011 Walter Bender
+# Port To GTK3:
+# Ignacio Rodriguez <ignaciorodriguez@sugarlabs.org>
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -10,9 +12,8 @@
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
+from gi.repository import Gtk, Gdk, GdkPixbuf, GObject
 
-import gtk
-import gobject
 import cairo
 
 from math import sqrt, pi
@@ -25,7 +26,7 @@ import logging
 _logger = logging.getLogger('turtle-in-a-pond-activity')
 
 try:
-    from sugar.graphics import style
+    from sugar3.graphics import style
     GRID_CELL_SIZE = style.GRID_CELL_SIZE
 except ImportError:
     GRID_CELL_SIZE = 0
@@ -92,13 +93,12 @@ class Game():
         self._canvas = canvas
         parent.show_all()
 
-        self._canvas.set_flags(gtk.CAN_FOCUS)
-        self._canvas.add_events(gtk.gdk.BUTTON_PRESS_MASK)
-        self._canvas.connect("expose-event", self._expose_cb)
+        self._canvas.add_events(Gdk.EventMask.BUTTON_PRESS_MASK)
+        self._canvas.connect("draw", self.__draw_cb)
         self._canvas.connect("button-press-event", self._button_press_cb)
 
-        self._width = gtk.gdk.screen_width()
-        self._height = gtk.gdk.screen_height() - (GRID_CELL_SIZE * 1.5)
+        self._width = Gdk.Screen.width()
+        self._height = Gdk.Screen.height() - (GRID_CELL_SIZE * 1.5)
         self._scale = self._height / (14.0 * DOT_SIZE * 1.2)
         self._dot_size = int(DOT_SIZE * self._scale)
         self._turtle_offset = 0
@@ -164,7 +164,7 @@ class Game():
         self._turtle.set_shape(self._turtle_images[0])
         self._set_label('')
         if self._timeout_id is not None:
-            gobject.source_remove(self._timeout_id)
+            GObject.source_remove(self._timeout_id)
 
     def new_game(self, saved_state=None):
         ''' Start a new game. '''
@@ -189,7 +189,7 @@ class Game():
         win.grab_focus()
         x, y = map(int, event.get_coords())
 
-        spr = self._sprites.find_sprite((x, y), inverse=True)
+        spr = self._sprites.find_sprite((x, y))
         if spr == None:
             return
 
@@ -291,7 +291,7 @@ class Game():
         self._orientation += 1
         self._orientation %= 6
         self._turtle.set_shape(self._turtle_images[self._orientation])
-        self._timeout_id = gobject.timeout_add(250, self._happy_turtle_dance)
+        self._timeout_id = GObject.timeout_add(250, self._happy_turtle_dance)
 
     def _ordered_weights(self, pos):
         ''' Returns the list of surrounding points sorted by their
@@ -366,10 +366,8 @@ class Game():
         traceback.print_exc()
         return None
 
-    def _expose_cb(self, win, event):
-        ''' Callback to handle window expose events '''
-        self.do_expose_event(event)
-        return True
+    def __draw_cb(self, canvas, cr):
+		self._sprites.redraw_sprites(cr=cr)
 
     def do_expose_event(self, event):
         ''' Handle the expose-event by drawing '''
@@ -382,7 +380,7 @@ class Game():
         self._sprites.redraw_sprites(cr=cr)
 
     def _destroy_cb(self, win, event):
-        gtk.main_quit()
+        Gtk.main_quit()
 
     def _new_dot(self, color):
         ''' generate a dot of a color color '''
@@ -413,12 +411,10 @@ class Game():
         for i in range(6):
             surface = cairo.ImageSurface(cairo.FORMAT_ARGB32, nw, nh)
             context = cairo.Context(surface)
-            context = gtk.gdk.CairoContext(context)
+            Gdk.cairo_set_source_pixbuf(context, pixbuf, 0, 0)
             context.translate(nw / 2., nh / 2.)
             context.rotate((30 + i * 60) * pi / 180.)
             context.translate(-nw / 2., -nh / 2.)
-            context.set_source_pixbuf(image, (nw - w) / 2.,
-                                              (nh - h) / 2.)
             context.rectangle(0, 0, nw, nh)
             context.fill()
             self._turtle_images.append(surface)
@@ -521,7 +517,7 @@ class Game():
 
 def svg_str_to_pixbuf(svg_string):
     """ Load pixbuf from SVG string """
-    pl = gtk.gdk.PixbufLoader('svg')
+    pl = GdkPixbuf.PixbufLoader.new_with_type('svg') 
     pl.write(svg_string)
     pl.close()
     pixbuf = pl.get_pixbuf()
