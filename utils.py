@@ -10,7 +10,6 @@
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
 
-from gi.repository import GdkPixbuf
 from StringIO import StringIO
 try:
     OLD_SUGAR_SYSTEM = False
@@ -52,12 +51,3 @@ def json_dump(data):
         _io = StringIO()
         jdump(data, _io)
         return _io.getvalue()
-
-
-def svg_str_to_pixbuf(svg_string):
-    ''' Load pixbuf from SVG string '''
-    pl = GdkPixbuf.PixbufLoader.new_with_type('svg') 
-    pl.write(svg_string)
-    pl.close()
-    pixbuf = pl.get_pixbuf()
-    return pixbuf
