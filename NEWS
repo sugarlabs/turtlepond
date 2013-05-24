@@ -1,8 +1,14 @@
 NEWS
 
+9
+
+ENHANCEMENT:
+
+* New translations
+
 7
 
-ENHANCEMENTS:
+ENHANCEMENT:
 * Ignacio Rodríguez port to gtk3
 
 6
@@ -29,7 +35,6 @@ ENHANCEMENTS:
 
 BUG FIX:
 * Fixed bug with errant button presses
-
 
 3
 
