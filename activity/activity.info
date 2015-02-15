@@ -7,3 +7,4 @@ exec = sugar-activity TurtlePondActivity.TurtlePondActivity
 icon = activity-turtlepond
 show_launcher = yes
 summary = a strategy game
+category = maths game programming
