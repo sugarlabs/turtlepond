@@ -1,0 +1,53 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-10-30 00:32-0400\n"
+"PO-Revision-Date: 2016-05-07 07:19+0000\n"
+"Last-Translator: Robert <rbuj@fedoraproject.org>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ca\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Pootle 2.5.1.1\n"
+"X-POOTLE-MTIME: 1462605555.000000\n"
+
+#. TRANS: "name" option from activity.info file
+msgid "Turtle in a Pond"
+msgstr "Tortuga en un estany"
+
+#. TRANS: "summary" option from activity.info file
+#. TRANS: "description" option from activity.info file
+msgid "a strategy game"
+msgstr "un joc d'estratègia"
+
+#: TurtlePondActivity.py:48
+msgid "Beginner"
+msgstr "Principiant"
+
+#: TurtlePondActivity.py:48
+msgid "Intermediate"
+msgstr "Intermedi"
+
+#: TurtlePondActivity.py:48
+msgid "Expert"
+msgstr "Expert"
+
+#: TurtlePondActivity.py:49
+msgid "My strategy"
+msgstr "La meva estratègia"
+
+#: TurtlePondActivity.py:98
+msgid "Start a new game."
+msgstr "Comença una partida nova."
+
+#: TurtlePondActivity.py:138
+msgid "Load strategy from Journal"
+msgstr "Carrega l'estratègia des del diari"
