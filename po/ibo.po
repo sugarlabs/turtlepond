@@ -2,52 +2,53 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-10-30 00:32-0400\n"
-"PO-Revision-Date: 2015-02-19 08:58+0000\n"
-"Last-Translator: Tymon <dwgipk@gmail.com>\n"
+"PO-Revision-Date: 2016-05-25 03:33+0000\n"
+"Last-Translator: Chris <cjl@sugarlabs.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: pl\n"
+"Language: ibo\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
-"|| n%100>=20) ? 1 : 2);\n"
+"Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Pootle 2.5.1.1\n"
-"X-POOTLE-MTIME: 1424336295.000000\n"
+"X-POOTLE-MTIME: 1464147222.000000\n"
 
 #. TRANS: "name" option from activity.info file
 msgid "Turtle in a Pond"
-msgstr "Żółw w stawie"
+msgstr "Mbemmiri na a Ọdọ mmiri"
 
 #. TRANS: "summary" option from activity.info file
 #. TRANS: "description" option from activity.info file
 msgid "a strategy game"
-msgstr "gra strategiczna"
+msgstr "atụmatụ egwumegwu"
 
 #: TurtlePondActivity.py:48
 msgid "Beginner"
-msgstr "Początkujący"
+msgstr "Onye mbido"
 
 #: TurtlePondActivity.py:48
+#, fuzzy
 msgid "Intermediate"
-msgstr "Średnio-zaawansowany"
+msgstr "Intermediate"
 
 #: TurtlePondActivity.py:48
 msgid "Expert"
-msgstr "Ekspert"
+msgstr "Dioka"
 
 #: TurtlePondActivity.py:49
 msgid "My strategy"
-msgstr "Moja strategia"
+msgstr "Atụmatụ m"
 
 #: TurtlePondActivity.py:98
 msgid "Start a new game."
-msgstr "Rozpocznij nową grę."
+msgstr "Amalite ọhụrụ egwumegwu."
 
 #: TurtlePondActivity.py:138
 msgid "Load strategy from Journal"
-msgstr "Załaduj strategię z Dziennika"
+msgstr "Ibu aghụghọ site jonaal"
