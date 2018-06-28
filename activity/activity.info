@@ -1,10 +1,12 @@
 [Activity]
 name = Turtle in a Pond
 activity_version = 9
-license = GPLv3
+license = GPLv3+;MIT
 bundle_id = org.sugarlabs.TurtlePondActivity
 exec = sugar-activity TurtlePondActivity.TurtlePondActivity
 icon = activity-turtlepond
 show_launcher = yes
-summary = a strategy game
-category = maths game programming
+summary = A strategy game with the objective to surround the turtle before it runs of the screen.  
+tags = Maths;Game;Programming
+repository = https://github.com/sugarlabs/turtlepond
+url = https://help.sugarlabs.org/en/turtle_in_a_pond.html
