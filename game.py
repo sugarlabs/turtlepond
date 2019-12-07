@@ -187,7 +187,7 @@ class Game():
 
     def _button_press_cb(self, win, event):
         win.grab_focus()
-        x, y = map(int, event.get_coords())
+        x, y = list(map(int, event.get_coords()))
 
         spr = self._sprites.find_sprite((x, y), inverse=True)
         if spr == None:
@@ -347,27 +347,27 @@ class Game():
         ''' Run Python code passed as argument '''
         userdefined = {}
         try:
-            exec f in globals(), userdefined
+            exec(f, globals(), userdefined)
             return userdefined['_turtle_strategy'](self, arg)
-        except ZeroDivisionError, e:
-            self._set_label('Python zero-divide error: %s' % (str(e)))
-        except ValueError, e:
-            self._set_label('Python value error: %s' % (str(e)))
-        except SyntaxError, e:
-            self._set_label('Python syntax error: %s' % (str(e)))
-        except NameError, e:
-            self._set_label('Python name error: %s' % (str(e)))
-        except OverflowError, e:
-            self._set_label('Python overflow error: %s' % (str(e)))
-        except TypeError, e:
-            self._set_label('Python type error: %s' % (str(e)))
+        except ZeroDivisionError as e:
+            self._set_label('Python zero-divide error: {}'.format(e))
+        except ValueError as e:
+            self._set_label('Python value error: {}'.format(e))
+        except SyntaxError as e:
+            self._set_label('Python syntax error: {}'.format(e))
+        except NameError as e:
+            self._set_label('Python name error: {}'.format(e))
+        except OverflowError as e:
+            self._set_label('Python overflow error: {}'.format(e))
+        except TypeError as e:
+            self._set_label('Python type error: {}'.format(e))
         except:
             self._set_label('Python error')
         traceback.print_exc()
         return None
 
     def __draw_cb(self, canvas, cr):
-		self._sprites.redraw_sprites(cr=cr)
+        self._sprites.redraw_sprites(cr=cr)
 
     def do_expose_event(self, event):
         ''' Handle the expose-event by drawing '''
@@ -518,7 +518,7 @@ class Game():
 def svg_str_to_pixbuf(svg_string):
     """ Load pixbuf from SVG string """
     pl = GdkPixbuf.PixbufLoader.new_with_type('svg') 
-    pl.write(svg_string)
+    pl.write(svg_string.encode())
     pl.close()
     pixbuf = pl.get_pixbuf()
     return pixbuf
