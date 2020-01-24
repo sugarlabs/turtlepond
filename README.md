@@ -6,7 +6,7 @@ Turtle in a Pond is a strategy game. The goal is to surround the turtle before i
 How to use?
 ===========
 
-Turtle in a Pond is part of the Sugar desktop.  Please refer to;
+Turtle in a Pond is not part of the Sugar desktop, but can be added.  Please refer to;
 
 * [How to Get Sugar on sugarlabs.org](https://sugarlabs.org/),
 * [How to use Sugar](https://help.sugarlabs.org/),
