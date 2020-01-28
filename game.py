@@ -165,6 +165,7 @@ class Game():
         self._set_label('')
         if self._timeout_id is not None:
             GObject.source_remove(self._timeout_id)
+            self._timeout_id = None
 
     def new_game(self, saved_state=None):
         ''' Start a new game. '''
