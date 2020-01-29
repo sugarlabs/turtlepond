@@ -1,4 +1,4 @@
-#Copyright (c) 2011 Walter Bender
+# Copyright (c) 2011 Walter Bender
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,7 +23,7 @@ except (ImportError, AttributeError):
         import simplejson as json
         from simplejson import load as jload
         from simplejson import dump as jdump
-    except:
+    except BaseException:
         OLD_SUGAR_SYSTEM = True
 
 
@@ -56,7 +56,7 @@ def json_dump(data):
 
 def svg_str_to_pixbuf(svg_string):
     ''' Load pixbuf from SVG string '''
-    pl = GdkPixbuf.PixbufLoader.new_with_type('svg') 
+    pl = GdkPixbuf.PixbufLoader.new_with_type('svg')
     pl.write(svg_string)
     pl.close()
     pixbuf = pl.get_pixbuf()
