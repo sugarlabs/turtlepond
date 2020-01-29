@@ -13,7 +13,7 @@
 import gi
 gi.require_version('Gtk', '3.0')
 
-from gi.repository import Gtk, GObject, Gdk
+from gi.repository import Gtk, Gdk
 
 import sugar3
 from sugar3.activity import activity

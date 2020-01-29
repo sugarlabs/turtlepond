@@ -12,7 +12,7 @@
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
-from gi.repository import Gtk, Gdk, GdkPixbuf, GObject
+from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 
 import cairo
 
@@ -164,7 +164,7 @@ class Game():
         self._turtle.set_shape(self._turtle_images[0])
         self._set_label('')
         if self._timeout_id is not None:
-            GObject.source_remove(self._timeout_id)
+            GLib.source_remove(self._timeout_id)
 
     def new_game(self, saved_state=None):
         ''' Start a new game. '''
@@ -291,7 +291,7 @@ class Game():
         self._orientation += 1
         self._orientation %= 6
         self._turtle.set_shape(self._turtle_images[self._orientation])
-        self._timeout_id = GObject.timeout_add(250, self._happy_turtle_dance)
+        self._timeout_id = GLib.timeout_add(250, self._happy_turtle_dance)
 
     def _ordered_weights(self, pos):
         ''' Returns the list of surrounding points sorted by their
