@@ -155,7 +155,6 @@ class Game():
             if dot.type:
                 dot.type = False
                 dot.set_shape(self._new_dot(self._colors[FILL]))
-
             dot.set_label('')
 
         # Recenter the turtle
