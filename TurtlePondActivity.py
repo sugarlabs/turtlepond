@@ -1,4 +1,4 @@
-#Copyright (c) 2011 Walter Bender
+# Copyright (c) 2011 Walter Bender
 # Port To GTK3:
 # Ignacio Rodriguez <ignaciorodriguez@sugarlabs.org>
 # This program is free software; you can redistribute it and/or modify
@@ -15,31 +15,20 @@ gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk, Gdk
 
-import sugar3
 from sugar3.activity import activity
 from sugar3 import profile
 from sugar3.graphics.toolbarbox import ToolbarBox
-from sugar3.bundle.activitybundle import ActivityBundle
 from sugar3.activity.widgets import ActivityToolbarButton
 from sugar3.activity.widgets import StopButton
-from sugar3.graphics.toolbarbox import ToolbarButton
 
-from sugar3.graphics.toolbutton import ToolButton
-from sugar3.graphics.menuitem import MenuItem
-from sugar3.graphics.icon import Icon
-from sugar3.datastore import datastore
 from sugar3.graphics.objectchooser import ObjectChooser
 
-from toolbar_utils import button_factory, image_factory, label_factory, \
+from toolbar_utils import button_factory, label_factory, \
     separator_factory, radio_factory
 
 from gettext import gettext as _
-import locale
-import os.path
 
 from game import Game
-from genxo import generate_xo
-from utils import svg_str_to_pixbuf
 
 import logging
 _logger = logging.getLogger('turtle-in-a-pond-activity')
@@ -68,7 +57,7 @@ class TurtlePondActivity(activity.Activity):
 
         # Create a canvas
         canvas = Gtk.DrawingArea()
-        canvas.set_size_request(Gdk.Screen.width(), \
+        canvas.set_size_request(Gdk.Screen.width(),
                                 Gdk.Screen.height())
         self.set_canvas(canvas)
         canvas.show()
@@ -167,7 +156,7 @@ class TurtlePondActivity(activity.Activity):
     def _do_load_python_cb(self, button):
         ''' Load Python code from the Journal. '''
         self._chooser('org.laptop.Pippy',
-                self._load_python_code_from_journal)
+                      self._load_python_code_from_journal)
         if self._game.strategies[CUSTOM] is not None:
             self.custom_button.set_active(True)
         self._game.level = CUSTOM

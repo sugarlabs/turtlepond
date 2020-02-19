@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-#Copyright (c) 2011 Walter Bender
+# Copyright (c) 2011 Walter Bender
 
 # Port To GTK3:
 # Ignacio Rodriguez <ignaciorodriguez@sugarlabs.org>
@@ -16,11 +16,9 @@
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
 
-import os
-
-
 class SVG:
     ''' SVG generators '''
+
     def __init__(self):
         self._scale = 1
         self._stroke_width = 1
@@ -28,14 +26,27 @@ class SVG:
         self._stroke = '#000000'
 
     def _svg_style(self, extras=""):
-        return "%s%s%s%s%s%f%s%s%s" % (" style=\"fill:", self._fill, ";stroke:",
-                                       self._stroke, ";stroke-width:",
-                                       self._stroke_width, ";", extras,
+        return "%s%s%s%s%s%f%s%s%s" % (" style=\"fill:",
+                                       self._fill,
+                                       ";stroke:",
+                                       self._stroke,
+                                       ";stroke-width:",
+                                       self._stroke_width,
+                                       ";",
+                                       extras,
                                        "\" />\n")
 
     def _svg_xo(self):
         self.set_stroke_width(3.5)
-        svg_string = "<path d=\"M33.233,35.1l10.102,10.1c0.752,0.75,1.217,1.783,1.217,2.932   c0,2.287-1.855,4.143-4.146,4.143c-1.145,0-2.178-0.463-2.932-1.211L27.372,40.961l-10.1,10.1c-0.75,0.75-1.787,1.211-2.934,1.211   c-2.284,0-4.143-1.854-4.143-4.141c0-1.146,0.465-2.184,1.212-2.934l10.104-10.102L11.409,24.995   c-0.747-0.748-1.212-1.785-1.212-2.93c0-2.289,1.854-4.146,4.146-4.146c1.143,0,2.18,0.465,2.93,1.214l10.099,10.102l10.102-10.103   c0.754-0.749,1.787-1.214,2.934-1.214c2.289,0,4.146,1.856,4.146,4.145c0,1.146-0.467,2.18-1.217,2.932L33.233,35.1z\""
+        svg_string = "<path d=\"M33.233,35.1l10.102,10.1c0.752,0.75,"
+        "1.217,1.783,1.217,2.932   c0,2.287-1.855,4.143-4.146,4.143c-1.145,"
+        "0-2.178-0.463-2.932-1.211L27.372,40.961l-10.1,10.1c-0.75,0.75-1.787,"
+        "1.211-2.934,1.211   c-2.284,0-4.143-1.854-4.143-4.141c0-1.146,"
+        "0.465-2.184,1.212-2.934l10.104-10.102L11.409,24.995   "
+        "c-0.747-0.748-1.212-1.785-1.212-2.93c0-2.289,1.854-4.146,"
+        "4.146-4.146c1.143,0,2.18,0.465,2.93,1.214l10.099,10.102l10.102-10.103"
+        "   c0.754-0.749,1.787-1.214,2.934-1.214c2.289,0,4.146,1.856,"
+        "4.146,4.145c0,1.146-0.467,2.18-1.217,2.932L33.233,35.1z\""
         svg_string += self._svg_style()
         svg_string += "\n<circle cx=\"27.371\" cy=\"10.849\" r=\"8.122\""
         svg_string += self._svg_style()
@@ -80,6 +91,7 @@ class SVG:
 
     def set_stroke_width(self, stroke_width=1.0):
         self._stroke_width = stroke_width
+
 
 def generate_xo(scale=1, colors=["#FFFFFF", "#000000"]):
     svg = SVG()
