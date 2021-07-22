@@ -12,6 +12,7 @@
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
+# from TurtlePondActivity import TurtlePondActivity
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 
 import cairo
@@ -37,7 +38,7 @@ FILL = 1
 STROKE = 0
 THIRTEEN = 13
 DOT_SIZE = 20
-DOT_SIZE_GAMEOVER = 40
+DOT_SIZE_GAMEOVER = 70
 CIRCLE = [[(0, -1), (1, 0), (0, 1), (-1, 1), (-1, 0), (-1, -1)],
           [(1, -1), (1, 0), (1, 1), (0, 1), (-1, 0), (0, -1)]]
 ''' Simple strategy: head to daylight or randomly check for an open dot
@@ -170,12 +171,13 @@ class Game():
             if dot.type:
                 dot.type = False
                 dot.set_shape(self._new_dot(self._colors[FILL]))                
-            dot.set_label('-')
-
+            dot.set_label('')
+            dot.set_layer(100)
+        self._turtle.set_layer(100)
         # Recenter the turtle
         self._move_turtle(self._dots[int(THIRTEEN * THIRTEEN / 2)].get_xy())
         self._turtle.set_shape(self._turtle_images[0])
-        self._set_label('allclear')
+        self._set_label('')
         if self._timeout_id is not None:
             GLib.source_remove(self._timeout_id)
 
@@ -251,6 +253,7 @@ class Game():
             # Game-over feedback
             self._once_around = False
             self._happy_turtle_dance()
+            self._timeout_id = GLib.timeout_add(10000, self._game_over)
             return True
         c = int(self._turtle_dot / THIRTEEN) % 2
         if self._dots[
@@ -284,9 +287,9 @@ class Game():
         for x in range(2, 6):
             self._gameover.append(
                 Sprite(self._sprites,
-                       xoffset + (x - 0.5) * (self._dot_size + 50),
-                       y * (self._dot_size + 200 + self._space) + yoffset,
-                       self._new_dot_gameover('#A0FFA0')))
+                       xoffset + (x - 0.5) * (self._dot_size + 140),
+                       y * (self._dot_size + 140 + self._space) + yoffset,
+                       self._new_dot_gameover(self._colors[FILL])))
             self._gameover[-1].type = -1  # No image
             self._gameover[-1].set_label_attributes(72)
         text = [
@@ -296,13 +299,13 @@ class Game():
             "☻"
         ]
         self.rings(len(text), text, self._gameover)
-        y = 2
+        y = 3
         for x in range(2, 5):
             self._score.append(
                 Sprite(self._sprites,
-                               xoffset +(x ) * (self._dot_size + 50),
-                               y * (self._dot_size + 150 + self._space),
-                               self._new_dot_gameover('#B0B0B0')))
+                               xoffset + (x + 0.1)  * (self._dot_size + 140),
+                               y * (self._dot_size + 80 + self._space),
+                               self._new_dot_gameover(self._colors[FILL])))
             self._score[-1].type = -1  # No image
             self._score[-1].set_label_attributes(72)
         text = [
@@ -311,12 +314,12 @@ class Game():
             "  1  "
         ]
         self.rings(len(text), text, self._score)
-        y = 3
+        y = 5
         for x in range(2, 5):
             self._highscore.append(
                 Sprite(self._sprites,
-                               xoffset + (x ) * (self._dot_size + 50),
-                               y * (self._dot_size + 130 + self._space),
+                               xoffset + (x + 0.1) * (self._dot_size + 140),
+                               y * (self._dot_size + 65 + self._space),
                                self._new_dot_gameover(self._colors[FILL])))
             self._highscore[-1].type = -1  # No image
             self._highscore[-1].set_label_attributes(72)
@@ -327,14 +330,14 @@ class Game():
         ]
         self.rings(len(text), text, self._highscore)
         self._correct = 0
-        self._timeout_id = GLib.timeout_add(3000, self.new_game)
+        self._timeout_id = GLib.timeout_add(5000, self.new_game)
         
     def rings(self, num, text, shape):
         i = 0
         for x in range(num):
             shape[x].type = -1
             shape[x].set_shape(self._new_dot_gameover(
-                        '#FF8080'))
+                        self._colors[FILL]))
             shape[x].set_label(text[i])
             shape[x].set_layer(100)
             i += 1
@@ -371,7 +374,7 @@ class Game():
         self._orientation %= 6
         self._turtle.set_shape(self._turtle_images[self._orientation])
         self._timeout_id = GLib.timeout_add(250, self._happy_turtle_dance)
-        self._timeout_id = GLib.timeout_add(9000, self._game_over)
+        return
 
     def _ordered_weights(self, pos):
         ''' Returns the list of surrounding points sorted by their
@@ -422,7 +425,6 @@ class Game():
                 pos2 = (THIRTEEN - pos[0], THIRTEEN - pos[1])
                 self._weights.append(min(min(pos[0], pos2[0]),
                                          min(pos[1], pos2[1])))
-
     def _my_strategy_import(self, f, arg):
         ''' Run Python code passed as argument '''
         userdefined = {}
