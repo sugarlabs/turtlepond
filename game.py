@@ -19,6 +19,8 @@ import cairo
 
 from math import sqrt, pi
 from random import uniform
+import threading
+import time
 
 from gettext import gettext as _
 
@@ -122,6 +124,12 @@ class Game():
         self._gameover = []
         self._score = []
         self._highscore = []
+        self.best_time = 0
+        self.gameover_flag = False
+        self.time_now = 0
+        self.minutes = 0
+        self.seconds = 0
+        self.thread = 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
         for y in range(THIRTEEN):
             for x in range(THIRTEEN):
                 xoffset = int((self._width - THIRTEEN * (self._dot_size + \
@@ -190,10 +198,23 @@ class Game():
             if self._dots[n].type is not None:
                 self._dots[n].type = True
                 self._dots[n].set_shape(self._new_dot(self._colors[STROKE]))
-
         # Calculate the distances to the edge
         self._initialize_weights()
         self.strategy = self.strategies[self.level]
+        self.thread = threading.Thread(target = self.timer, daemon = True)
+        self.gameover_flag = False
+        self.thread.start()
+
+    def timer(self):
+        self.time_now = 0
+        while (self.gameover_flag is False) and (self.time_now < 180):
+            time.sleep(1)
+            self.time_now += 1
+            self.seconds += 1
+            if self.seconds >= 60:
+                self.minutes = self.seconds // 60
+                self.minutes = self.minutes % 60
+                self.seconds = 0
 
     def _set_label(self, string):
         ''' Set the label in the toolbar or the window frame. '''
@@ -252,6 +273,7 @@ class Game():
         if self._dots[new_dot].type is None:
             # Game-over feedback
             self._once_around = False
+            self.gameover_flag = True
             self._happy_turtle_dance()
             self._timeout_id = GLib.timeout_add(10000, self._game_over)
             return True
@@ -271,11 +293,15 @@ class Game():
            # Game-over feedback
            for dot in self._dots:
                dot.set_label(':)')
+           self.gameover_flag = True
            self._timeout_id = GLib.timeout_add(4000, self._game_over)
            return True
-
         return False
+
     def _game_over(self):
+        best_time = 0
+        best_seconds = 0
+        best_minutes = 0
         for dot in self._dots:
             dot.hide()
         self._turtle.hide()
@@ -310,8 +336,8 @@ class Game():
             self._score[-1].set_label_attributes(72)
         text = [
             "  your  ",
-            " score:  ",
-            "  1  "
+            " time:  ",
+            (' {:02d}:{:02d} '.format(self.minutes, self.seconds))
         ]
         self.rings(len(text), text, self._score)
         y = 5
@@ -323,13 +349,18 @@ class Game():
                                self._new_dot_gameover(self._colors[FILL])))
             self._highscore[-1].type = -1  # No image
             self._highscore[-1].set_label_attributes(72)
+        if self.time_now <= self.best_time:
+            best_time = self.time_now
+            best_seconds = self.seconds - 1
+            best_minutes = self.minutes
         text = [
-            "  high  ",
-            " score:  ",
-            "    2   "
+            "  best  ",
+            " time:  ",
+            (' {:02d}:{:02d} '.format(best_minutes, best_seconds))
         ]
         self.rings(len(text), text, self._highscore)
-        self._correct = 0
+        self.minutes = 0
+        self.seconds = 0
         self._timeout_id = GLib.timeout_add(5000, self.new_game)
         
     def rings(self, num, text, shape):
@@ -341,6 +372,7 @@ class Game():
             shape[x].set_label(text[i])
             shape[x].set_layer(100)
             i += 1
+            
     def _grid_to_dot(self, pos):
         ''' calculate the dot index from a column and row in the grid '''
         return pos[0] + pos[1] * THIRTEEN
