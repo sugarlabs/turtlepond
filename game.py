@@ -125,8 +125,9 @@ class Game():
         self._sprites = Sprites(self._canvas)
         self._dots = []
         self._gameover = []
-        self._score = []
-        self._highscore = []
+        self._your_time = []
+        self._best_time = []
+        self._win_lose = []
         self.best_time = self.load_best_time()
         self.gameover_flag = False
         self.game_lost = False
@@ -175,9 +176,11 @@ class Game():
         # Clear dots
         for gameover_shape in self._gameover:
             gameover_shape.hide()
-        for score_shape in self._score:
-            score_shape.hide()
-        for highscore_shape in self._highscore:
+        for win_lose_shape in self._win_lose:
+            win_lose_shape.hide()
+        for your_time_shape in self._your_time:
+            your_time_shape.hide()
+        for highscore_shape in self._best_time:
             highscore_shape.hide()
         for dot in self._dots:
             if dot.type:
@@ -314,12 +317,11 @@ class Game():
         xoffset = int((self._width - 6 * self._dot_size_gameover -
                        5 * self._space_gameover) / 2.)
         y = 1
-        i = 0
         for x in range(2, 6):
             self._gameover.append(
                 Sprite(self._sprites,
-                       xoffset + (x - 0.5) * (self._dot_size + 140),
-                       y * (self._dot_size + 140 + self._space) + yoffset,
+                       xoffset + (x - 0.25) * (self._dot_size + 130),
+                       y * (self._dot_size + 10 + self._space) + yoffset,
                        self._new_dot_gameover(self._colors[FILL])))
             self._gameover[-1].type = -1  # No image
             self._gameover[-1].set_label_attributes(72)
@@ -330,31 +332,67 @@ class Game():
             "☻"
         ]
         self.rings(len(text), text, self._gameover)
-        y = 3
-        for x in range(2, 5):
-            self._score.append(
+        y = 3.5
+        for x in range(2, 6):
+            self._win_lose.append(
                 Sprite(self._sprites,
-                               xoffset + (x + 0.1)  * (self._dot_size + 140),
-                               y * (self._dot_size + 80 + self._space),
-                               self._new_dot_gameover(self._colors[FILL])))
-            self._score[-1].type = -1  # No image
-            self._score[-1].set_label_attributes(72)
+                       xoffset + (x - 0.25) * (self._dot_size + 130),
+                       y * (self._dot_size + 15 + self._space) + yoffset,
+                       self._new_dot_gameover(self._colors[FILL])))
+            self._win_lose[-1].type = -1  # No image
+            self._win_lose[-1].set_label_attributes(72)
+        text_win_best_time = [
+            "☻",
+            "  YOU  ",
+            "  WON  ",
+            "☻"
+        ]
+        text_lose = [
+            "☹",
+            "   YOU   ",
+            "  LOST  ",
+            "☹"
+        ]
+        text_win = [
+            "☻",
+            " GOOD ",
+            "  JOB  ",
+            "☻"
+        ]
+        if self.game_lost:
+            self.rings(len(text_lose), text_lose, self._win_lose)
+        elif self.time_now <= self.best_time:
+            self.rings(
+                len(text_win_best_time),
+                text_win_best_time,
+                self._win_lose)
+        else:
+            self.rings(len(text_win), text_win, self._win_lose)
+        y = 4
+        for x in range(2, 5):
+            self._your_time.append(
+                Sprite(self._sprites,
+                        xoffset + (x + 0.2)  * (self._dot_size + 130),
+                        y * (self._dot_size + 60 + self._space),
+                        self._new_dot_gameover(self._colors[FILL])))
+            self._your_time[-1].type = -1  # No image
+            self._your_time[-1].set_label_attributes(72)
         text = [
             "  your  ",
             " time:  ",
             (' {:02d}:{:02d} '.format(self.minutes, self.seconds))
         ]
-        self.rings(len(text), text, self._score)
-        y = 5
+        self.rings(len(text), text, self._your_time)
+        y = 5.5
         for x in range(2, 5):
-            self._highscore.append(
+            self._best_time.append(
                 Sprite(self._sprites,
-                               xoffset + (x + 0.1) * (self._dot_size + 140),
-                               y * (self._dot_size + 65 + self._space),
-                               self._new_dot_gameover(self._colors[FILL])))
-            self._highscore[-1].type = -1  # No image
-            self._highscore[-1].set_label_attributes(72)
-        if (self.time_now <= self.best_time) and (self.game_lost is False):
+                        xoffset + (x + 0.2) * (self._dot_size + 130),
+                        y * (self._dot_size + 65 + self._space),
+                        self._new_dot_gameover(self._colors[FILL])))
+            self._best_time[-1].type = -1  # No image
+            self._best_time[-1].set_label_attributes(72)
+        if self.time_now <= self.best_time and not self.game_lost:
             self.best_time = self.time_now
             best_seconds = self.seconds
             best_minutes = self.minutes
@@ -363,10 +401,10 @@ class Game():
             " time:  ",
             (' {:02d}:{:02d} '.format(best_minutes, best_seconds))
         ]
-        self.rings(len(text), text, self._highscore)
+        self.rings(len(text), text, self._best_time)
         self.minutes = 0
         self.seconds = 0
-        self._timeout_id = GLib.timeout_add(5000, self.new_game)
+        self._timeout_id = GLib.timeout_add(7000, self.new_game)
         
     def rings(self, num, text, shape):
         i = 0
