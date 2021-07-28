@@ -21,6 +21,9 @@ from math import sqrt, pi
 from random import uniform
 import threading
 import time
+import os
+
+from sugar3.activity.activity import get_activity_root
 
 from gettext import gettext as _
 
@@ -124,8 +127,9 @@ class Game():
         self._gameover = []
         self._score = []
         self._highscore = []
-        self.best_time = 0
+        self.best_time = self.load_best_time()
         self.gameover_flag = False
+        self.game_lost = False
         self.time_now = 0
         self.minutes = 0
         self.seconds = 0
@@ -203,6 +207,7 @@ class Game():
         self.strategy = self.strategies[self.level]
         self.thread = threading.Thread(target = self.timer, daemon = True)
         self.gameover_flag = False
+        self.game_lost = False
         self.thread.start()
 
     def timer(self):
@@ -299,12 +304,12 @@ class Game():
         return False
 
     def _game_over(self):
-        best_time = 0
-        best_seconds = 0
-        best_minutes = 0
+        best_seconds = self.best_time % 60
+        best_minutes = self.best_time // 60
         for dot in self._dots:
             dot.hide()
         self._turtle.hide()
+        self.save_best_time()
         yoffset = int(self._space_gameover / 4.)
         xoffset = int((self._width - 6 * self._dot_size_gameover -
                        5 * self._space_gameover) / 2.)
@@ -349,9 +354,9 @@ class Game():
                                self._new_dot_gameover(self._colors[FILL])))
             self._highscore[-1].type = -1  # No image
             self._highscore[-1].set_label_attributes(72)
-        if self.time_now <= self.best_time:
-            best_time = self.time_now
-            best_seconds = self.seconds - 1
+        if (self.time_now <= self.best_time) and (self.game_lost is False):
+            self.best_time = self.time_now
+            best_seconds = self.seconds
             best_minutes = self.minutes
         text = [
             "  best  ",
@@ -383,6 +388,7 @@ class Game():
 
     def _happy_turtle_dance(self):
         ''' Turtle dances along the edge '''
+        self.game_lost = True
         i = self._find_the_turtle()
         if i == 0: 
             if self._once_around:
@@ -639,6 +645,28 @@ class Game():
         svg += '</g>\n'
         return svg
 
+    def save_best_time(self):
+        file_path = os.path.join(get_activity_root(), 'data', 'best_time')
+        best_time = [180]
+        if os.path.exists(file_path):
+            with open(file_path, "r") as fp:
+                best_time = fp.readlines()
+
+        int_best_time = int(best_time[0])
+        if not int_best_time < self.time_now:
+            with open(file_path, "w") as fp:
+                fp.write(str(self.time_now))
+
+    def load_best_time(self):
+        file_path = os.path.join(get_activity_root(), 'data', 'best_time')
+        if os.path.exists(file_path):
+            try:
+                with open(file_path, "r") as fp:
+                    best_time = fp.readlines()
+                return int(best_time[0])
+            except ValueError or IndexError:
+                return 0
+        return 0
 
 def svg_str_to_pixbuf(svg_string):
     """ Load pixbuf from SVG string """
