@@ -12,7 +12,6 @@
 # along with this library; if not, write to the Free Software
 # Foundation, 51 Franklin Street, Suite 500 Boston, MA 02110-1335 USA
 
-# from TurtlePondActivity import TurtlePondActivity
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 
 import cairo
@@ -128,13 +127,7 @@ class Game():
         self._your_time = []
         self._best_time = []
         self._win_lose = []
-        self.best_time = self.load_best_time()
-        self.gameover_flag = False
-        self.game_lost = False
-        self.time_now = 0
-        self.minutes = 0
-        self.seconds = 0
-        self.thread = 0                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+        self.best_time = self.load_best_time()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
         for y in range(THIRTEEN):
             for x in range(THIRTEEN):
                 xoffset = int((self._width - THIRTEEN * (self._dot_size + \
@@ -198,6 +191,7 @@ class Game():
 
     def new_game(self, saved_state=None):
         ''' Start a new game. '''
+        self.game_lost = False
         self._all_clear()
         # Fill in a few dots to start
         for i in range(15):
@@ -207,22 +201,8 @@ class Game():
                 self._dots[n].set_shape(self._new_dot(self._colors[STROKE]))
         # Calculate the distances to the edge
         self._initialize_weights()
+        self.game_start_time = time.time()
         self.strategy = self.strategies[self.level]
-        self.thread = threading.Thread(target = self.timer, daemon = True)
-        self.gameover_flag = False
-        self.game_lost = False
-        self.thread.start()
-
-    def timer(self):
-        self.time_now = 0
-        while (self.gameover_flag is False) and (self.time_now < 180):
-            time.sleep(1)
-            self.time_now += 1
-            self.seconds += 1
-            if self.seconds >= 60:
-                self.minutes = self.seconds // 60
-                self.minutes = self.minutes % 60
-                self.seconds = 0
 
     def _set_label(self, string):
         ''' Set the label in the toolbar or the window frame. '''
@@ -281,7 +261,7 @@ class Game():
         if self._dots[new_dot].type is None:
             # Game-over feedback
             self._once_around = False
-            self.gameover_flag = True
+            self.game_stop_time = time.time()
             self._happy_turtle_dance()
             self._timeout_id = GLib.timeout_add(10000, self._game_over)
             return True
@@ -301,7 +281,7 @@ class Game():
            # Game-over feedback
            for dot in self._dots:
                dot.set_label(':)')
-           self.gameover_flag = True
+               self.game_stop_time = time.time()
            self._timeout_id = GLib.timeout_add(4000, self._game_over)
            return True
         return False
@@ -309,10 +289,13 @@ class Game():
     def _game_over(self):
         best_seconds = self.best_time % 60
         best_minutes = self.best_time // 60
+        self.elapsed_time = int(self.game_stop_time - self.game_start_time)
+        second = self.elapsed_time % 60
+        minute = self.elapsed_time // 60
         for dot in self._dots:
             dot.hide()
         self._turtle.hide()
-        self.save_best_time()
+        
         yoffset = int(self._space_gameover / 4.)
         xoffset = int((self._width - 6 * self._dot_size_gameover -
                        5 * self._space_gameover) / 2.)
@@ -361,7 +344,7 @@ class Game():
         ]
         if self.game_lost:
             self.rings(len(text_lose), text_lose, self._win_lose)
-        elif self.time_now <= self.best_time:
+        elif self.elapsed_time <= self.best_time:
             self.rings(
                 len(text_win_best_time),
                 text_win_best_time,
@@ -380,7 +363,7 @@ class Game():
         text = [
             "  your  ",
             " time:  ",
-            (' {:02d}:{:02d} '.format(self.minutes, self.seconds))
+            (' {:02d}:{:02d} '.format(minute, second))
         ]
         self.rings(len(text), text, self._your_time)
         y = 5.5
@@ -392,18 +375,17 @@ class Game():
                         self._new_dot_gameover(self._colors[FILL])))
             self._best_time[-1].type = -1  # No image
             self._best_time[-1].set_label_attributes(72)
-        if self.time_now <= self.best_time and not self.game_lost:
-            self.best_time = self.time_now
-            best_seconds = self.seconds
-            best_minutes = self.minutes
+        if self.elapsed_time <= self.best_time and not self.game_lost:
+            self.best_time = self.elapsed_time
+            best_seconds = second
+            best_minutes = minute
         text = [
             "  best  ",
             " time:  ",
             (' {:02d}:{:02d} '.format(best_minutes, best_seconds))
         ]
         self.rings(len(text), text, self._best_time)
-        self.minutes = 0
-        self.seconds = 0
+        self.save_best_time()
         self._timeout_id = GLib.timeout_add(7000, self.new_game)
         
     def rings(self, num, text, shape):
@@ -547,10 +529,11 @@ class Game():
         self._svg_width = self._dot_size_gameover
         self._svg_height = self._dot_size_gameover
         return svg_str_to_pixbuf(
-            self._header() + \
-            self._circle(self._dot_size_gameover / 2., self._dot_size_gameover / 2.,
-                         self._dot_size_gameover / 2.) + \
-            self._footer())
+                            self._header()
+                            + self._circle(self._dot_size_gameover / 2.,
+                                           self._dot_size_gameover / 2.,
+                                           self._dot_size_gameover / 2.)
+                            + self._footer())
     def _new_dot(self, color):
         ''' generate a dot of a color color '''
         self._stroke = color
@@ -691,9 +674,9 @@ class Game():
                 best_time = fp.readlines()
 
         int_best_time = int(best_time[0])
-        if not int_best_time < self.time_now:
+        if not int_best_time < self.elapsed_time:
             with open(file_path, "w") as fp:
-                fp.write(str(self.time_now))
+                fp.write(str(self.elapsed_time))
 
     def load_best_time(self):
         file_path = os.path.join(get_activity_root(), 'data', 'best_time')
