@@ -529,11 +529,11 @@ class Game():
         self._svg_width = self._dot_size_gameover
         self._svg_height = self._dot_size_gameover
         return svg_str_to_pixbuf(
-                            self._header()
-                            + self._circle(self._dot_size_gameover / 2.,
-                                           self._dot_size_gameover / 2.,
-                                           self._dot_size_gameover / 2.)
-                            + self._footer())
+            self._header()
+            + self._circle(self._dot_size_gameover / 2.,
+                           self._dot_size_gameover / 2.,
+                           self._dot_size_gameover / 2.)
+            + self._footer())
     def _new_dot(self, color):
         ''' generate a dot of a color color '''
         self._stroke = color
