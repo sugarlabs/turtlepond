@@ -303,7 +303,7 @@ class Game():
         for x in range(2, 6):
             self._gameover.append(
                 Sprite(self._sprites,
-                       xoffset + (x - 0.25) * (self._dot_size_gameover),
+                       xoffset + (x - 0.50) * self._dot_size_gameover,
                        y * (self._dot_size  + self._space) + yoffset,
                        self._new_dot_gameover(self._colors[FILL])))
             self._gameover[-1].type = -1  # No image
@@ -319,7 +319,7 @@ class Game():
         for x in range(2, 6):
             self._win_lose.append(
                 Sprite(self._sprites,
-                       xoffset + (x - 0.25) * (self._dot_size_gameover),
+                       xoffset + (x - 0.50) * self._dot_size_gameover,
                        y * (self._dot_size  + self._space) + yoffset,
                        self._new_dot_gameover(self._colors[FILL])))
             self._win_lose[-1].type = -1  # No image
@@ -355,7 +355,7 @@ class Game():
         for x in range(2, 5):
             self._your_time.append(
                 Sprite(self._sprites,
-                        xoffset + (x + 0.2)  * (self._dot_size_gameover),
+                        xoffset + x * self._dot_size_gameover,
                         y * (self._dot_size + self._space),
                         self._new_dot_gameover(self._colors[FILL])))
             self._your_time[-1].type = -1  # No image
@@ -370,7 +370,7 @@ class Game():
         for x in range(2, 5):
             self._best_time.append(
                 Sprite(self._sprites,
-                        xoffset + (x + 0.2) * (self._dot_size_gameover),
+                        xoffset + x * self._dot_size_gameover,
                         y * (self._dot_size + self._space),
                         self._new_dot_gameover(self._colors[FILL])))
             self._best_time[-1].type = -1  # No image
