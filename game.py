@@ -667,20 +667,19 @@ class Game():
         return svg
 
     def save_best_time(self):
-        file_path = os.path.join(get_activity_root(), 'data', 'best_time')
+        file_path = os.path.join(get_activity_root(), 'data', 'best-time')
         best_time = [180]
         if os.path.exists(file_path):
             with open(file_path, "r") as fp:
                 best_time = fp.readlines()
-        if best_time == 0.0:
-            best_time = self.elapsed_time
         int_best_time = int(best_time[0])
-        if not int_best_time <= self.elapsed_time:
-            with open(file_path, "w") as fp:
-                fp.write(str(self.elapsed_time))
+        if not int_best_time <= self.elapsed_time and not self.game_lost:
+            int_best_time = self.elapsed_time
+        with open(file_path, "w") as fp:
+            fp.write(str(int_best_time))
 
     def load_best_time(self):
-        file_path = os.path.join(get_activity_root(), 'data', 'best_time')
+        file_path = os.path.join(get_activity_root(), 'data', 'best-time')
         if os.path.exists(file_path):
             try:
                 with open(file_path, "r") as fp:
