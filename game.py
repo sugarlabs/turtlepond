@@ -191,6 +191,7 @@ class Game():
 
     def new_game(self, saved_state=None):
         ''' Start a new game. '''
+        self.gameover_flag = False
         self.game_lost = False
         self._all_clear()
         # Fill in a few dots to start
@@ -262,6 +263,7 @@ class Game():
             # Game-over feedback
             self._once_around = False
             self.game_stop_time = time.time()
+            self.gameover_flag = True
             self._happy_turtle_dance()
             self._timeout_id = GLib.timeout_add(10000, self._game_over)
             return True
@@ -282,6 +284,7 @@ class Game():
            for dot in self._dots:
                dot.set_label(':)')
                self.game_stop_time = time.time()
+               self.gameover_flag = True
            self._timeout_id = GLib.timeout_add(4000, self._game_over)
            return True
         return False

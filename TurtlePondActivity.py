@@ -154,7 +154,11 @@ class TurtlePondActivity(activity.Activity):
 
     def _new_game_cb(self, button=None):
         ''' Start a new game. '''
-        self._game.new_game()
+        if not self._game.gameover_flag:
+            self._game.new_game()
+        else: 
+            self._new_game_button.props.sensitive = False
+        self._new_game_button.props.sensitive = True
 
     def write_file(self, file_path):
         """ Write the grid status to the Journal """
