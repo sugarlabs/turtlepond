@@ -188,6 +188,7 @@ class Game():
         self._set_label('')
         if self._timeout_id is not None:
             GLib.source_remove(self._timeout_id)
+            self._timeout_id = None
 
     def new_game(self, saved_state=None):
         ''' Start a new game. '''
@@ -204,6 +205,7 @@ class Game():
         self._initialize_weights()
         self.game_start_time = time.time()
         self.strategy = self.strategies[self.level]
+        self._timeout_id = None
 
     def _set_label(self, string):
         ''' Set the label in the toolbar or the window frame. '''
