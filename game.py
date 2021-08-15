@@ -684,11 +684,12 @@ class Game():
     def load_best_time(self):
         file_path = os.path.join(get_activity_root(), 'data', 'best-time')
         if os.path.exists(file_path):
-            try:
-                with open(file_path, "r") as fp:
-                    best_time = fp.readlines()
-                return int(best_time[0])
-            except(ValueError, IndexError):
+            with open(file_path, "r") as fp:
+                highscore = fp.readlines()
+            try: 
+                return int(highscore[0])
+            except  Exception as e:
+                logging.exception(e)                
                 return 0
         return 0
 
