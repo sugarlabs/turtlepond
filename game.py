@@ -118,7 +118,7 @@ class Game():
                            EXPERT_STRATEGY, self.custom_strategy]
         self.strategy = self.strategies[self.level]
         self._timeout_id = None
-
+        self.best_time = self.load_best_time()
         # Generate the sprites we'll need...
         self._sprites = Sprites(self._canvas)
         self._dots = []
@@ -126,7 +126,6 @@ class Game():
         self._your_time = []
         self._best_time = []
         self._win_lose = []
-        self.best_time = self.load_best_time()                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             
         for y in range(THIRTEEN):
             for x in range(THIRTEEN):
                 offset_x = int((self._width - THIRTEEN * (self._dot_size + \
@@ -144,7 +143,8 @@ class Game():
                         Sprite(self._sprites,
                                offset_x + x * (self._dot_size + self._space),
                                y * (self._dot_size + self._space),
-                               self._new_dot(self._colors[FILL], self._dot_size)))
+                               self._new_dot(self._colors[FILL],
+                                             self._dot_size)))
                     self._dots[-1].type = False  # not set
 
         # Put a turtle at the center of the screen...
@@ -177,7 +177,8 @@ class Game():
         for dot in self._dots:
             if dot.type:
                 dot.type = False
-                dot.set_shape(self._new_dot(self._colors[FILL], self._dot_size))                
+                dot.set_shape(self._new_dot(self._colors[FILL],
+                                            self._dot_size))
             dot.set_label('')
             dot.set_layer(100)
         self._turtle.set_layer(100)
@@ -199,7 +200,8 @@ class Game():
             n = int(uniform(0, THIRTEEN * THIRTEEN))
             if self._dots[n].type is not None:
                 self._dots[n].type = True
-                self._dots[n].set_shape(self._new_dot(self._colors[STROKE], self._dot_size))
+                self._dots[n].set_shape(self._new_dot(self._colors[STROKE],
+                                        self._dot_size))
         # Calculate the distances to the edge
         self._initialize_weights()
         self.game_start_time = time.time()
@@ -299,7 +301,7 @@ class Game():
         for dot in self._dots:
             dot.hide()
         self._turtle.hide()
-        
+
         offset_y = int(self._space_gameover / 4.)
         offset_x = int((self._width - 6 * self._dot_size_gameover -
                        5 * self._space_gameover) / 2.)
@@ -308,8 +310,9 @@ class Game():
             self._gameover.append(
                 Sprite(self._sprites,
                        offset_x + (x - 0.50) * self._dot_size_gameover,
-                       y * (self._dot_size  + self._space) + offset_y,
-                       self._new_dot(self._colors[FILL], self._dot_size_gameover)))
+                       y * (self._dot_size + self._space) + offset_y,
+                       self._new_dot(self._colors[FILL],
+                                     self._dot_size_gameover)))
             self._gameover[-1].type = -1  # No image
             self._gameover[-1].set_label_attributes(72)
         text = [
@@ -324,8 +327,9 @@ class Game():
             self._win_lose.append(
                 Sprite(self._sprites,
                        offset_x + (x - 0.50) * self._dot_size_gameover,
-                       y * (self._dot_size  + self._space) + offset_y,
-                       self._new_dot(self._colors[FILL], self._dot_size_gameover)))
+                       y * (self._dot_size + self._space) + offset_y,
+                       self._new_dot(self._colors[FILL],
+                                     self._dot_size_gameover)))
             self._win_lose[-1].type = -1  # No image
             self._win_lose[-1].set_label_attributes(72)
         text_win_best_time = [
@@ -359,9 +363,10 @@ class Game():
         for x in range(2, 5):
             self._your_time.append(
                 Sprite(self._sprites,
-                        offset_x + x * self._dot_size_gameover,
-                        y * (self._dot_size + self._space),
-                        self._new_dot(self._colors[FILL], self._dot_size_gameover)))
+                       offset_x + x * self._dot_size_gameover,
+                       y * (self._dot_size + self._space),
+                       self._new_dot(self._colors[FILL],
+                                     self._dot_size_gameover)))
             self._your_time[-1].type = -1  # No image
             self._your_time[-1].set_label_attributes(72)
         text = [
@@ -374,9 +379,10 @@ class Game():
         for x in range(2, 5):
             self._best_time.append(
                 Sprite(self._sprites,
-                        offset_x + x * self._dot_size_gameover,
-                        y * (self._dot_size + self._space),
-                        self._new_dot(self._colors[FILL], self._dot_size_gameover)))
+                       offset_x + x * self._dot_size_gameover,
+                       y * (self._dot_size + self._space),
+                       self._new_dot(self._colors[FILL],
+                                     self._dot_size_gameover)))
             self._best_time[-1].type = -1  # No image
             self._best_time[-1].set_label_attributes(72)
         if self.elapsed_time <= self.best_time and not self.game_lost:
@@ -391,7 +397,7 @@ class Game():
         self.rings(len(text), text, self._best_time)
         self.save_best_time()
         self._timeout_id = GLib.timeout_add(7000, self.new_game)
-        
+
     def rings(self, num, text, shape):
         i = 0
         for x in range(num):
@@ -401,7 +407,7 @@ class Game():
             shape[x].set_label(text[i])
             shape[x].set_layer(100)
             i += 1
-            
+
     def _grid_to_dot(self, pos):
         ''' calculate the dot index from a column and row in the grid '''
         return pos[0] + pos[1] * THIRTEEN
@@ -414,7 +420,7 @@ class Game():
         ''' Turtle dances along the edge '''
         self.game_lost = True
         i = self._find_the_turtle()
-        if i == 0: 
+        if i == 0:
             if self._once_around:
                 return
             else:
