@@ -1,5 +1,26 @@
 NEWS
 
+
+10
+
+ENHANCEMENT:
+
+* New translations
+* Refactored 'new_dot' function (Sourabha G)
+* Renamed variables (Sourabha G)
+* disabled new game button when gameover page is shown (Sourabha G)
+* Fix source remove warning (Ibiam Chihurumnaya)
+* Save and restore 'best-time' from Journal (Sourabha G)
+* Feature: gameover page with 'best-time' and 'your-time' (Sourabha G)
+* Feature: Stopwatch in each game (Sourabha G)
+* Deanglify links to help.sugarlabs.org (James Cameron)
+* Port from GObject to Glib (Ayush Nawal)
+* Fix README.md for Honey classification (James Cameron)
+* Port to Python 3 (Bottersnike)
+* fix PyGIWarnings (Ibiam Chihurumnaya)
+* Update metadata in activity.info (Vipul Gupta)
+* Add README (rdrsadhu)
+
 9
 
 ENHANCEMENT:
