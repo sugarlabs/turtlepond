@@ -15,12 +15,11 @@
 from gi.repository import Gtk, Gdk, GdkPixbuf, GLib
 
 import cairo
+import os
+import time
 
 from math import sqrt, pi
 from random import uniform
-import threading
-import time
-import os
 
 from sugar3.activity.activity import get_activity_root
 
