@@ -8,46 +8,50 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2012-10-30 00:32-0400\n"
-"PO-Revision-Date: 2019-03-09 01:59+0000\n"
-"Last-Translator: Paulo Francisco <slomp@ufrgs.br>\n"
+"PO-Revision-Date: 2017-03-19 14:36+0000\n"
+"Last-Translator: Pinkbluesoul <stephanie.meyer@klangbaum.de>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: pt_BR\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Generator: Pootle 2.5.1.1\n"
-"X-POOTLE-MTIME: 1552096777.000000\n"
+"X-POOTLE-MTIME: 1489934171.000000\n"
 
 #. TRANS: "name" option from activity.info file
+#, fuzzy
 msgid "Turtle in a Pond"
-msgstr "Tartaruga no lago"
+msgstr "Schildkröte im Teich"
 
 #. TRANS: "summary" option from activity.info file
 #. TRANS: "description" option from activity.info file
 msgid "a strategy game"
-msgstr "um jogo de estratégia"
+msgstr "ein Strategiespiel"
 
 #: TurtlePondActivity.py:48
 msgid "Beginner"
-msgstr "Iniciante"
+msgstr "Anfänger"
 
 #: TurtlePondActivity.py:48
+#, fuzzy
 msgid "Intermediate"
-msgstr "Intermediário"
+msgstr "Fortgeschrittene"
 
 #: TurtlePondActivity.py:48
+#, fuzzy
 msgid "Expert"
-msgstr "Avançado"
+msgstr "Experte"
 
 #: TurtlePondActivity.py:49
 msgid "My strategy"
-msgstr "Minha estratégia"
+msgstr ""
 
 #: TurtlePondActivity.py:98
+#, fuzzy
 msgid "Start a new game."
-msgstr "Iniciar um novo jogo."
+msgstr "Neues Spiel starten."
 
 #: TurtlePondActivity.py:138
 msgid "Load strategy from Journal"
-msgstr "Carregar estratégia do Diário"
+msgstr ""
