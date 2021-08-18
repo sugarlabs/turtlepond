@@ -138,13 +138,13 @@ class Game():
                         Sprite(self._sprites,
                                offset_x + x * (self._dot_size + self._space),
                                y * (self._dot_size + self._space),
-                               self._new_dot('#B0B0B0')))
+                               self._new_dot('#B0B0B0', self._dot_size)))
                 else:
                     self._dots.append(
                         Sprite(self._sprites,
                                offset_x + x * (self._dot_size + self._space),
                                y * (self._dot_size + self._space),
-                               self._new_dot(self._colors[FILL])))
+                               self._new_dot(self._colors[FILL], self._dot_size)))
                     self._dots[-1].type = False  # not set
 
         # Put a turtle at the center of the screen...
@@ -177,7 +177,7 @@ class Game():
         for dot in self._dots:
             if dot.type:
                 dot.type = False
-                dot.set_shape(self._new_dot(self._colors[FILL]))                
+                dot.set_shape(self._new_dot(self._colors[FILL], self._dot_size))                
             dot.set_label('')
             dot.set_layer(100)
         self._turtle.set_layer(100)
@@ -199,7 +199,7 @@ class Game():
             n = int(uniform(0, THIRTEEN * THIRTEEN))
             if self._dots[n].type is not None:
                 self._dots[n].type = True
-                self._dots[n].set_shape(self._new_dot(self._colors[STROKE]))
+                self._dots[n].set_shape(self._new_dot(self._colors[STROKE], self._dot_size))
         # Calculate the distances to the edge
         self._initialize_weights()
         self.game_start_time = time.time()
@@ -220,7 +220,7 @@ class Game():
 
         if spr.type is not None and not spr.type:
             spr.type = True
-            spr.set_shape(self._new_dot(self._colors[STROKE]))
+            spr.set_shape(self._new_dot(self._colors[STROKE], self._dot_size))
             self._weights[self._dots.index(spr)] = 1000
             self._test_game_over(self._move_the_turtle())
         return True
@@ -309,7 +309,7 @@ class Game():
                 Sprite(self._sprites,
                        offset_x + (x - 0.50) * self._dot_size_gameover,
                        y * (self._dot_size  + self._space) + offset_y,
-                       self._new_dot_gameover(self._colors[FILL])))
+                       self._new_dot(self._colors[FILL], self._dot_size_gameover)))
             self._gameover[-1].type = -1  # No image
             self._gameover[-1].set_label_attributes(72)
         text = [
@@ -325,7 +325,7 @@ class Game():
                 Sprite(self._sprites,
                        offset_x + (x - 0.50) * self._dot_size_gameover,
                        y * (self._dot_size  + self._space) + offset_y,
-                       self._new_dot_gameover(self._colors[FILL])))
+                       self._new_dot(self._colors[FILL], self._dot_size_gameover)))
             self._win_lose[-1].type = -1  # No image
             self._win_lose[-1].set_label_attributes(72)
         text_win_best_time = [
@@ -361,7 +361,7 @@ class Game():
                 Sprite(self._sprites,
                         offset_x + x * self._dot_size_gameover,
                         y * (self._dot_size + self._space),
-                        self._new_dot_gameover(self._colors[FILL])))
+                        self._new_dot(self._colors[FILL], self._dot_size_gameover)))
             self._your_time[-1].type = -1  # No image
             self._your_time[-1].set_label_attributes(72)
         text = [
@@ -376,7 +376,7 @@ class Game():
                 Sprite(self._sprites,
                         offset_x + x * self._dot_size_gameover,
                         y * (self._dot_size + self._space),
-                        self._new_dot_gameover(self._colors[FILL])))
+                        self._new_dot(self._colors[FILL], self._dot_size_gameover)))
             self._best_time[-1].type = -1  # No image
             self._best_time[-1].set_label_attributes(72)
         if self.elapsed_time <= self.best_time and not self.game_lost:
@@ -396,8 +396,8 @@ class Game():
         i = 0
         for x in range(num):
             shape[x].type = -1
-            shape[x].set_shape(self._new_dot_gameover(
-                        self._colors[FILL]))
+            shape[x].set_shape(self._new_dot(
+                        self._colors[FILL], self._dot_size_gameover))
             shape[x].set_label(text[i])
             shape[x].set_layer(100)
             i += 1
@@ -436,7 +436,6 @@ class Game():
         self._orientation %= 6
         self._turtle.set_shape(self._turtle_images[self._orientation])
         self._timeout_id = GLib.timeout_add(250, self._happy_turtle_dance)
-        return
 
     def _ordered_weights(self, pos):
         ''' Returns the list of surrounding points sorted by their
@@ -526,28 +525,16 @@ class Game():
     def _destroy_cb(self, win, event):
         Gtk.main_quit()
 
-    def _new_dot_gameover(self, color):
+    def _new_dot(self, color, dot_size):
         ''' generate a dot of a color color '''
         self._stroke = color
         self._fill = color
-        self._svg_width = self._dot_size_gameover
-        self._svg_height = self._dot_size_gameover
-        return svg_str_to_pixbuf(
-            self._header()
-            + self._circle(self._dot_size_gameover / 2.,
-                           self._dot_size_gameover / 2.,
-                           self._dot_size_gameover / 2.)
-            + self._footer())
-    def _new_dot(self, color):
-        ''' generate a dot of a color color '''
-        self._stroke = color
-        self._fill = color
-        self._svg_width = self._dot_size
-        self._svg_height = self._dot_size
+        self._svg_width = dot_size
+        self._svg_height = dot_size
         return svg_str_to_pixbuf(
             self._header() + \
-            self._circle(self._dot_size / 2., self._dot_size / 2.,
-                         self._dot_size / 2.) + \
+            self._circle(dot_size / 2., dot_size / 2.,
+                         dot_size / 2.) + \
             self._footer())
 
     def _new_turtle(self):
