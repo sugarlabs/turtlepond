@@ -687,10 +687,10 @@ class Game():
         if os.path.exists(file_path):
             with open(file_path, "r") as fp:
                 highscore = fp.readlines()
-            try: 
+            try:
                 return int(highscore[0])
-            except  Exception as e:
-                logging.exception(e)                
+            except (ValueError, IndexError) as e:
+                logging.exception(e)
                 return 0
         return 0
 
