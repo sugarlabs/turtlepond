@@ -103,7 +103,7 @@ class Game():
         self._canvas.connect("button-press-event", self._button_press_cb)
 
         self._width = Gdk.Screen.width()
-        self._height = Gdk.Screen.height() - (GRID_CELL_SIZE * 1.5)
+        self._height = Gdk.Screen.height() - GRID_CELL_SIZE
         self._scale = self._height / (14.0 * DOT_SIZE * 1.2)
         self._scale_gameover = self._height / (4.0 * DOT_SIZE_GAMEOVER * 1.2)
         self._dot_size = int(DOT_SIZE * self._scale)
@@ -130,19 +130,21 @@ class Game():
             for x in range(THIRTEEN):
                 offset_x = int((self._width - THIRTEEN * (self._dot_size + \
                                       self._space) - self._space) / 2.)
+                offset_y = int((self._height - THIRTEEN * (self._dot_size + \
+                                      self._space) - self._space) / 2.)
                 if y % 2 == 1:
                     offset_x += int((self._dot_size + self._space) / 2.)
                 if x == 0 or y == 0 or x == THIRTEEN - 1 or y == THIRTEEN - 1:
                     self._dots.append(
                         Sprite(self._sprites,
                                offset_x + x * (self._dot_size + self._space),
-                               y * (self._dot_size + self._space),
+                               offset_y + y * (self._dot_size + self._space),
                                self._new_dot('#B0B0B0', self._dot_size)))
                 else:
                     self._dots.append(
                         Sprite(self._sprites,
                                offset_x + x * (self._dot_size + self._space),
-                               y * (self._dot_size + self._space),
+                               offset_y + y * (self._dot_size + self._space),
                                self._new_dot(self._colors[FILL],
                                              self._dot_size)))
                     self._dots[-1].type = False  # not set
