@@ -39,7 +39,6 @@ from sprites import Sprites, Sprite
 
 FILL = 1
 STROKE = 0
-THIRTEEN = 13
 DOT_SIZE = 20
 DOT_SIZE_GAMEOVER = 70
 CIRCLE = [[(0, -1), (1, 0), (0, 1), (-1, 1), (-1, 0), (-1, -1)],
@@ -117,6 +116,8 @@ class Game():
         self.strategies = [BEGINNER_STRATEGY, INTERMEDIATE_STRATEGY,
                            EXPERT_STRATEGY, self.custom_strategy]
         self.strategy = self.strategies[self.level]
+        self.sizes = [13, 12, 11, 10]
+        self.size = self.sizes[self.level]
         self._timeout_id = None
         self.best_time = self.load_best_time()
         # Generate the sprites we'll need...
@@ -126,13 +127,24 @@ class Game():
         self._your_time = []
         self._best_time = []
         self._win_lose = []
-        for y in range(THIRTEEN):
-            for x in range(THIRTEEN):
-                offset_x = int((self._width - THIRTEEN * (self._dot_size + \
+
+        # Put a turtle at the center of the screen...
+        self._turtle_images = []
+        self._rotate_turtle(self._new_turtle())
+        self._turtle = Sprite(self._sprites, 0, 0,
+                              self._turtle_images[0])
+        # ...and initialize.
+        self._all_clear()
+
+    def _init_grid(self):
+        self._dots = []
+        for y in range(self.size):
+            for x in range(self.size):
+                offset_x = int((self._width - self.size * (self._dot_size + \
                                       self._space) - self._space) / 2.)
                 if y % 2 == 1:
                     offset_x += int((self._dot_size + self._space) / 2.)
-                if x == 0 or y == 0 or x == THIRTEEN - 1 or y == THIRTEEN - 1:
+                if x == 0 or y == 0 or x == self.size - 1 or y == self.size - 1:
                     self._dots.append(
                         Sprite(self._sprites,
                                offset_x + x * (self._dot_size + self._space),
@@ -146,16 +158,7 @@ class Game():
                                self._new_dot(self._colors[FILL],
                                              self._dot_size)))
                     self._dots[-1].type = False  # not set
-
-        # Put a turtle at the center of the screen...
-        self._turtle_images = []
-        self._rotate_turtle(self._new_turtle())
-        self._turtle = Sprite(self._sprites, 0, 0,
-                              self._turtle_images[0])
-        self._move_turtle(self._dots[int(THIRTEEN * THIRTEEN / 2)].get_xy())
-
-        # ...and initialize.
-        self._all_clear()
+                self._dots[-1].set_layer(100)  # not set
 
     def _move_turtle(self, pos):
         ''' Move turtle and add its offset '''
@@ -174,16 +177,12 @@ class Game():
             your_time_shape.hide()
         for highscore_shape in self._best_time:
             highscore_shape.hide()
-        for dot in self._dots:
-            if dot.type:
-                dot.type = False
-                dot.set_shape(self._new_dot(self._colors[FILL],
-                                            self._dot_size))
-            dot.set_label('')
-            dot.set_layer(100)
+        for sprite in self._dots:
+            sprite.hide()
+        self._init_grid()
         self._turtle.set_layer(100)
         # Recenter the turtle
-        self._move_turtle(self._dots[int(THIRTEEN * THIRTEEN / 2)].get_xy())
+        self._move_turtle(self._dots[int(self.size * (self.size + (0 if self.size % 2 else 1)) / 2)].get_xy())
         self._turtle.set_shape(self._turtle_images[0])
         self._set_label('')
         if self._timeout_id is not None:
@@ -194,10 +193,12 @@ class Game():
         ''' Start a new game. '''
         self.gameover_flag = False
         self.game_lost = False
+        self.strategy = self.strategies[self.level]
+        self.size = self.sizes[self.level]
         self._all_clear()
         # Fill in a few dots to start
         for i in range(15):
-            n = int(uniform(0, THIRTEEN * THIRTEEN))
+            n = int(uniform(0, self.size * self.size))
             if self._dots[n].type is not None:
                 self._dots[n].type = True
                 self._dots[n].set_shape(self._new_dot(self._colors[STROKE],
@@ -205,7 +206,6 @@ class Game():
         # Calculate the distances to the edge
         self._initialize_weights()
         self.game_start_time = time.time()
-        self.strategy = self.strategies[self.level]
         self._timeout_id = None
 
     def _set_label(self, string):
@@ -270,19 +270,19 @@ class Game():
             self._happy_turtle_dance()
             self._timeout_id = GLib.timeout_add(10000, self._game_over)
             return True
-        c = int(self._turtle_dot / THIRTEEN) % 2
+        c = int(self._turtle_dot / self.size) % 2
         if self._dots[
-            new_dot + CIRCLE[c][0][0] + THIRTEEN * CIRCLE[c][0][1]].type and \
+            new_dot + CIRCLE[c][0][0] + self.size * CIRCLE[c][0][1]].type and \
            self._dots[
-            new_dot + CIRCLE[c][1][0] + THIRTEEN * CIRCLE[c][1][1]].type and \
+            new_dot + CIRCLE[c][1][0] + self.size * CIRCLE[c][1][1]].type and \
            self._dots[
-            new_dot + CIRCLE[c][2][0] + THIRTEEN * CIRCLE[c][2][1]].type and \
+            new_dot + CIRCLE[c][2][0] + self.size * CIRCLE[c][2][1]].type and \
            self._dots[
-            new_dot + CIRCLE[c][3][0] + THIRTEEN * CIRCLE[c][3][1]].type and \
+            new_dot + CIRCLE[c][3][0] + self.size * CIRCLE[c][3][1]].type and \
            self._dots[
-            new_dot + CIRCLE[c][4][0] + THIRTEEN * CIRCLE[c][4][1]].type and \
+            new_dot + CIRCLE[c][4][0] + self.size * CIRCLE[c][4][1]].type and \
            self._dots[
-            new_dot + CIRCLE[c][5][0] + THIRTEEN * CIRCLE[c][5][1]].type:
+            new_dot + CIRCLE[c][5][0] + self.size * CIRCLE[c][5][1]].type:
            # Game-over feedback
            for dot in self._dots:
                dot.set_label(':)')
@@ -410,11 +410,11 @@ class Game():
 
     def _grid_to_dot(self, pos):
         ''' calculate the dot index from a column and row in the grid '''
-        return pos[0] + pos[1] * THIRTEEN
+        return pos[0] + pos[1] * self.size
 
     def _dot_to_grid(self, dot):
         ''' calculate the grid column and row for a dot '''
-        return [dot % THIRTEEN, int(dot / THIRTEEN)]
+        return [dot % self.size, int(dot / self.size)]
 
     def _happy_turtle_dance(self):
         ''' Turtle dances along the edge '''
@@ -431,9 +431,9 @@ class Game():
             x += 1
         if x == 0:
             y -= 1
-        if x == THIRTEEN - 1:
+        if x == self.size - 1:
             y += 1
-        if y == THIRTEEN - 1:
+        if y == self.size - 1:
             x -= 1
         i = self._grid_to_dot((x, y))
         self._dots[i].set_label(':)')
@@ -489,7 +489,7 @@ class Game():
                 self._weights.append(1000)
             else:
                 pos = self._dot_to_grid(d)
-                pos2 = (THIRTEEN - pos[0], THIRTEEN - pos[1])
+                pos2 = (self.size - pos[0], self.size - pos[1])
                 self._weights.append(min(min(pos[0], pos2[0]),
                                          min(pos[1], pos2[1])))
     def _my_strategy_import(self, f, arg):
