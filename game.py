@@ -182,7 +182,7 @@ class Game():
         self._init_grid()
         self._turtle.set_layer(100)
         # Recenter the turtle
-        self._move_turtle(self._dots[int(self.size * (self.size + (0 if self.size % 2 else 1)) / 2)].get_xy())
+        self._move_turtle(self._dots[int(self.size * (self.size + 1 - self.size % 2) / 2)].get_xy())
         self._turtle.set_shape(self._turtle_images[0])
         self._set_label('')
         if self._timeout_id is not None:
