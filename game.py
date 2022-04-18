@@ -40,6 +40,7 @@ from sprites import Sprites, Sprite
 FILL = 1
 STROKE = 0
 DOT_SIZE = 20
+DEFAULT_GRID_SIZE = 13
 DOT_SIZE_GAMEOVER = 70
 CIRCLE = [[(0, -1), (1, 0), (0, 1), (-1, 1), (-1, 0), (-1, -1)],
           [(1, -1), (1, 0), (1, 1), (0, 1), (-1, 0), (0, -1)]]
@@ -112,6 +113,7 @@ class Game():
         self._space_gameover = int(self._dot_size_gameover / 5.)
         self._orientation = 0
         self.level = 0
+        self.classic_mode = True
         self.custom_strategy = None
         self.strategies = [BEGINNER_STRATEGY, INTERMEDIATE_STRATEGY,
                            EXPERT_STRATEGY, self.custom_strategy]
@@ -194,7 +196,7 @@ class Game():
         self.gameover_flag = False
         self.game_lost = False
         self.strategy = self.strategies[self.level]
-        self.size = self.sizes[self.level]
+        self.size =  DEFAULT_GRID_SIZE if self.classic_mode else self.sizes[self.level]
         self._all_clear()
         # Fill in a few dots to start
         for i in range(15):
