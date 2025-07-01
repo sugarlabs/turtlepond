@@ -48,6 +48,7 @@ BEGINNER = 0
 INTERMEDIATE = 1
 EXPERT = 2
 CUSTOM = 3
+
 LEVEL_LABELS = [_('Beginner'), _('Intermediate'), _('Expert'),
                 _('My strategy')]
 
@@ -131,6 +132,24 @@ class TurtlePondActivity(activity.Activity):
             tooltip=LEVEL_LABELS[CUSTOM],
             group=self.beginner_button)
 
+        separator_factory(self.toolbar, False, True)
+
+        self.classic_mode_button = radio_factory(
+            'classic',
+            self.toolbar,
+            self._gridsize_cb,
+            cb_arg=True,
+            tooltip="Classic Mode",
+            group=None)
+        self.gridchange_mode_button = radio_factory(
+            'vary',
+            self.toolbar,
+            self._gridsize_cb,
+            cb_arg=False,
+            tooltip="Scalable Mode: Decreases gridsize with difficulty",
+            group=self.classic_mode_button)
+
+
         self.status = label_factory(self.toolbar, '')
 
         separator_factory(toolbox.toolbar, True, False)
@@ -144,6 +163,10 @@ class TurtlePondActivity(activity.Activity):
         stop_button.props.accelerator = '<Ctrl>q'
         toolbox.toolbar.insert(stop_button, -1)
         stop_button.show()
+
+    def _gridsize_cb(self, button, classic_mode):
+        self._game.classic_mode = classic_mode
+        self._game.new_game()
 
     def _level_cb(self, button, level):
         if level == CUSTOM and self._game.strategies[CUSTOM] is None:
